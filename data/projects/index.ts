@@ -2,7 +2,7 @@ export interface Project {
     title: string;
     description: string;
     technologies: string[];
-    imageUrl: string;
+    imageUrl?: string;
     imageUrlDark?: string;
     url: string;
     githubUrl: string;
@@ -10,6 +10,17 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+    {
+        title: "Noirly Vision",
+        description:
+            "A strategic personal OS for turning vision into execution — with goals, milestones, focus sessions, a knowledge vault, and analytics in one connected workspace.",
+        technologies: ["Next.js", "React", "TypeScript", "MongoDB", "Firebase"],
+        imageUrl: "/projects/noirly-vision-feature-graphic.png",
+        imageUrlDark: "/projects/noirly-vision-feature-graphic-dark.png",
+        url: "https://noirly.vision.aneesh-pissay.in/",
+        githubUrl: "#",
+        category: "Web",
+    },
     {
         title: "Noirly AlgoLab",
         description:

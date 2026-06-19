@@ -1,4 +1,7 @@
 import type { StaticImageData } from "next/image";
+import noirlyVisionFeatureGraphic from "@/public/projects/noirly-vision-feature-graphic.png";
+import noirlyVisionFeatureGraphicDark from "@/public/projects/noirly-vision-feature-graphic-dark.png";
+import noirlyVisionLogo from "@/public/projects/noirly-vision-logo.png";
 import noirlyCalculatorFeatureGraphic from "@/public/projects/noirly-calculator-feature-graphic.png";
 import noirlyCalculatorFeatureGraphicDark from "@/public/projects/noirly-calculator-feature-graphic-dark.png";
 import noirlyCalculatorLogo from "@/public/projects/noirly-calculator-logo.png";
@@ -18,6 +21,17 @@ export interface FeaturedProject {
 }
 
 export const featuredProjects: FeaturedProject[] = [
+  {
+    title: "Noirly Vision",
+    type: "Productivity Product",
+    description:
+      "A strategic personal OS for turning vision into execution — with goals, milestones, focus sessions, a knowledge vault, and analytics in one connected workspace.",
+    stack: ["Next.js", "React", "TypeScript", "MongoDB", "Firebase"],
+    url: "https://noirly.vision.aneesh-pissay.in/",
+    featureGraphic: noirlyVisionFeatureGraphic,
+    featureGraphicDark: noirlyVisionFeatureGraphicDark,
+    logo: noirlyVisionLogo,
+  },
   {
     title: "Noirly AlgoLab",
     type: "EdTech Product",

@@ -5,7 +5,7 @@ import Image from "next/image";
 interface ProjectCardProps {
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   imageUrlDark?: string;
   tags: string[];
   demoUrl?: string;
@@ -25,23 +25,31 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     <div className="bg-card border border-border hover:border-muted-foreground transition-colors glass-effect">
       {/* Project Image */}
       <div className="relative h-48 bg-secondary border-b border-border">
-        <Image
-          src={imageUrl}
-          alt={title}
-          width={600}
-          height={400}
-          className={`absolute inset-0 w-full h-full object-contain${imageUrlDark ? " dark:hidden" : ""}`}
-          unoptimized
-        />
-        {imageUrlDark && (
-          <Image
-            src={imageUrlDark}
-            alt={title}
-            width={600}
-            height={400}
-            className="absolute inset-0 hidden w-full h-full object-contain dark:block"
-            unoptimized
-          />
+        {imageUrl ? (
+          <>
+            <Image
+              src={imageUrl}
+              alt={title}
+              width={600}
+              height={400}
+              className={`absolute inset-0 w-full h-full object-contain${imageUrlDark ? " dark:hidden" : ""}`}
+              unoptimized
+            />
+            {imageUrlDark && (
+              <Image
+                src={imageUrlDark}
+                alt={title}
+                width={600}
+                height={400}
+                className="absolute inset-0 hidden w-full h-full object-contain dark:block"
+                unoptimized
+              />
+            )}
+          </>
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+            Feature graphic coming soon
+          </div>
         )}
       </div>
 
