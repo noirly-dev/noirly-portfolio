@@ -112,9 +112,9 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="panel-window hidden flex-1 lg:flex lg:flex-col">
-              <div className="panel-titlebar">
-                <span className="font-mono text-[10px] tracking-[0.16em] uppercase opacity-50">
+            <div className="hidden flex-1 flex-col border border-dashed border-[var(--hairline)] bg-[var(--surface)] lg:flex">
+              <div className="flex items-center border-b border-dashed border-[var(--hairline)] px-5 py-4">
+                <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--text-muted)]">
                   core_stack
                 </span>
               </div>
@@ -122,17 +122,16 @@ export default function Home() {
                 <ul className="space-y-3">
                   {profile.heroHighlights.map((item) => (
                     <li key={item} className="flex items-start gap-3">
-                      <Check size={14} className="mt-0.5 shrink-0 opacity-60" />
-                      <span className="text-sm leading-relaxed opacity-85">{item}</span>
+                      <Check size={14} className="mt-0.5 shrink-0 text-[var(--text-muted)]" />
+                      <span className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                        {item}
+                      </span>
                     </li>
                   ))}
                 </ul>
-                <div className="flex flex-wrap gap-2 border-t border-dashed border-[color-mix(in_srgb,var(--panel-ink)_30%,transparent)] pt-4">
+                <div className="flex flex-wrap gap-2 border-t border-dashed border-[var(--hairline)] pt-4">
                   {techChips.map((chip) => (
-                    <span
-                      key={chip}
-                      className="border border-dashed border-[color-mix(in_srgb,var(--panel-ink)_35%,transparent)] px-2 py-0.5 font-mono text-[10px] tracking-[0.08em] uppercase opacity-70"
-                    >
+                    <span key={chip} className="tag-pill">
                       {chip}
                     </span>
                   ))}
