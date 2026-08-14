@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -20,13 +19,12 @@ const SECTION_IDS = ["home", "about", "stack", "experience", "work", "contact"];
 
 function hrefToSection(href: string): string | null {
   if (href === "/") return "home";
-  const hash = href.split("#")[1];
-  return hash ?? null;
+  return href.split("#")[1] ?? null;
 }
 
 export function Header({ title, navLinks }: HeaderProps) {
   const pathname = usePathname();
-  const [activeSection, setActiveSection] = useState<string>("home");
+  const [activeSection, setActiveSection] = useState("home");
   const [isDark, setIsDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -48,13 +46,8 @@ export function Header({ title, navLinks }: HeaderProps) {
   function toggleTheme() {
     const next = !isDark;
     setIsDark(next);
-    if (next) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem("theme", next ? "dark" : "light");
   }
 
   useEffect(() => {
@@ -67,10 +60,9 @@ export function Header({ title, navLinks }: HeaderProps) {
         ([entry]) => {
           if (entry.isIntersecting) intersecting.add(id);
           else intersecting.delete(id);
-          const active = SECTION_IDS.find((s) => intersecting.has(s)) ?? "home";
-          setActiveSection(active);
+          setActiveSection(SECTION_IDS.find((s) => intersecting.has(s)) ?? "home");
         },
-        { rootMargin: "-20% 0px -20% 0px" }
+        { rootMargin: "-22% 0px -45% 0px" },
       );
       obs.observe(el);
       return obs;
@@ -83,115 +75,83 @@ export function Header({ title, navLinks }: HeaderProps) {
     return hrefToSection(href) === activeSection;
   }
 
-  const desktopNavClass = (href: string) =>
-    `relative px-1 py-2 text-base font-medium transition-colors ${
-      isActive(href) ? "text-[var(--text)]" : "text-[var(--text-muted)] hover:text-[var(--text-secondary)]"
-    }`;
-
-  const mobileNavClass = (href: string) =>
-    `block py-3.5 text-lg font-medium transition-colors ${
-      isActive(href) ? "text-[var(--text)]" : "text-[var(--text-muted)]"
-    }`;
-
   return (
-    <header
-      className="sticky top-0 z-50 border-b backdrop-blur-md"
-      style={{
-        borderColor: "var(--border-color)",
-        background: "color-mix(in srgb, var(--bg) 92%, transparent)",
-      }}
-    >
-      <div className="section-inner">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <Link
-            href="/"
-            className="flex min-w-0 items-center gap-3 transition-opacity hover:opacity-90"
-            onClick={() => setMenuOpen(false)}
+    <header className="sticky top-0 z-50 border-b border-dashed border-[var(--hairline)] bg-[color-mix(in_srgb,var(--bg)_92%,transparent)] backdrop-blur-md">
+      <div className="section-inner flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
+        <Link
+          href="/#home"
+          className="min-w-0 shrink-0"
+          onClick={() => setMenuOpen(false)}
+        >
+          <span className="block font-display text-base font-bold tracking-[-0.04em] uppercase md:text-lg">
+            {title}
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-6 lg:flex">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={`relative py-2 font-mono text-[11px] font-semibold tracking-[0.16em] uppercase transition-colors ${
+                isActive(link.href)
+                  ? "text-[var(--text)]"
+                  : "text-[var(--text-muted)] hover:text-[var(--text)]"
+              }`}
+            >
+              {link.label}
+              {isActive(link.href) ? (
+                <span className="absolute inset-x-0 -bottom-0.5 h-px bg-[var(--text)]" />
+              ) : null}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+            className="flex h-9 w-9 items-center justify-center border border-dashed border-[var(--hairline)] text-[var(--text-muted)] transition-colors hover:bg-[var(--text)] hover:text-[var(--bg)]"
           >
-            <Image
-              src="/logo.png"
-              alt={`${title} logo`}
-              width={56}
-              height={56}
-              className="h-11 w-11 md:h-12 md:w-12 shrink-0 rounded-full object-cover"
-              priority
-            />
-            <span
-              className="truncate text-lg md:text-xl font-semibold tracking-tight"
-              style={{ color: "var(--text)", fontFamily: "var(--font-display), sans-serif" }}
-            >
-              {title}
-            </span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className={desktopNavClass(link.href)}>
-                {link.label}
-                {isActive(link.href) && (
-                  <span
-                    className="absolute -bottom-0.5 left-0 right-0 h-0.5 rounded-full"
-                    style={{ background: "var(--primary)" }}
-                  />
-                )}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="flex shrink-0 items-center gap-2">
-            <button
-              onClick={toggleTheme}
-              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-              className="w-10 h-10 flex items-center justify-center rounded-lg transition-colors hover:bg-[var(--surface-variant)]"
-              style={{ color: "var(--text-muted)", border: "1px solid var(--border-color)" }}
-            >
-              {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-
-            <button
-              onClick={() => setMenuOpen((open) => !open)}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              aria-expanded={menuOpen}
-              className="w-10 h-10 md:hidden flex items-center justify-center rounded-lg transition-colors hover:bg-[var(--surface-variant)]"
-              style={{ color: "var(--text)", border: "1px solid var(--border-color)" }}
-            >
-              {menuOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
+            {isDark ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="flex h-9 w-9 items-center justify-center border border-dashed border-[var(--hairline)] lg:hidden"
+          >
+            {menuOpen ? <X size={16} /> : <Menu size={16} />}
+          </button>
         </div>
       </div>
 
-      {menuOpen && (
+      {menuOpen ? (
         <>
           <button
             type="button"
             aria-label="Close menu"
-            className="fixed inset-0 top-16 z-40 bg-black/50 md:hidden"
+            className="fixed inset-0 top-16 z-40 bg-black/55 lg:hidden"
             onClick={() => setMenuOpen(false)}
           />
-          <nav
-            className="absolute left-0 right-0 top-full z-50 border-b px-4 py-3 md:hidden"
-            style={{
-              borderColor: "var(--border-color)",
-              background: "var(--bg)",
-            }}
-          >
-            <div className="flex flex-col">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={mobileNavClass(link.href)}
-                  style={{ borderBottom: "1px solid var(--border-color)" }}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
+          <nav className="absolute inset-x-0 top-full z-50 border-b border-dashed border-[var(--hairline)] bg-[var(--bg)] px-5 py-2 lg:hidden">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`block border-b border-dashed border-[var(--hairline)] py-3.5 font-mono text-[12px] font-semibold tracking-[0.16em] uppercase last:border-b-0 ${
+                  isActive(link.href) ? "text-[var(--text)]" : "text-[var(--text-muted)]"
+                }`}
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
           </nav>
         </>
-      )}
+      ) : null}
     </header>
   );
 }

@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -24,7 +23,6 @@ interface ArchLayer {
   id: string;
   label: string;
   Icon: LucideIcon;
-  color: string;
   tech: string[];
 }
 
@@ -33,28 +31,24 @@ const archLayers: ArchLayer[] = [
     id: "ui",
     label: "User Interface Layer",
     Icon: Monitor,
-    color: "#38BDF8",
     tech: ["React", "Next.js", "React Native"],
   },
   {
     id: "api",
     label: "API Layer",
     Icon: Server,
-    color: "#22C55E",
     tech: ["Node.js", "Express.js", "REST APIs"],
   },
   {
     id: "db",
     label: "Database Layer",
     Icon: Database,
-    color: "#F59E0B",
     tech: ["MongoDB", "Firebase"],
   },
   {
     id: "deploy",
     label: "Deployment Layer",
     Icon: Cloud,
-    color: "#0EA5E9",
     tech: ["AWS", "Docker", "CI/CD"],
   },
 ];
@@ -70,156 +64,77 @@ export default function Home() {
   const { heroStats, techChips } = profile;
 
   return (
-    <main className="page-shell">
-      <section id="home" className="hero-section min-h-[calc(100vh-4rem)] md:min-h-[calc(100vh-5rem)] flex items-center py-16 md:py-24">
-        <div className="section-inner w-full relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+    <main className="page-shell flex-1">
+      {/* Hero */}
+      <section id="home" className="border-b border-dashed border-[var(--hairline)]">
+        <div className="section-inner grid gap-12 py-14 md:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:py-24">
+          <div className="flex flex-col justify-between gap-10">
             <div>
-              <div className="badge-pill mb-6">{profile.badge}</div>
-
-              <h1
-                className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] mb-6 tracking-tight"
-                style={{ fontFamily: "var(--font-display), sans-serif" }}
-              >
-                {profile.title}
+              <p className="section-eyebrow">{profile.badge}</p>
+              <p className="mt-5 font-mono text-[11px] tracking-[0.14em] uppercase text-[var(--text-muted)]">
+                {profile.name}
+              </p>
+              <h1 className="mt-3 max-w-[14ch] font-display text-[clamp(2.75rem,8vw,5.5rem)] leading-[0.88] font-bold tracking-[-0.06em] uppercase">
+                <span className="text-perforated">{profile.title}</span>
                 <br />
-                <span style={{ color: "var(--primary)" }}>{profile.titleAccent}</span>
+                {profile.titleAccent}
               </h1>
-
-              <p className="text-base md:text-lg leading-relaxed mb-8 max-w-xl" style={{ color: "var(--text-secondary)" }}>
+              <p className="mt-6 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] md:text-lg">
                 {profile.description}
               </p>
-
-              <div className="grid grid-cols-3 gap-4 sm:gap-8 mb-8 max-w-lg">
-                {heroStats.map((stat) => (
-                  <div key={stat.label} className="surface-card px-3 py-4 sm:px-4 text-center sm:text-left">
-                    <div className="text-xl sm:text-2xl font-bold" style={{ color: "var(--text)" }}>{stat.value}</div>
-                    <div className="text-[11px] uppercase tracking-wide mt-1 leading-snug" style={{ color: "var(--text-muted)" }}>
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex gap-3 flex-wrap">
-                <Link href="/#work" className="btn-primary">
-                  View work
-                  <ArrowRight size={16} />
-                </Link>
-                <Link href="/#contact" className="btn-secondary">
-                  {profile.secondaryCta}
-                </Link>
-              </div>
             </div>
 
-            <div className="hidden lg:block">
-              <div className="panel-window">
-                <div className="panel-titlebar">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                    <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                    <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                  </div>
-                  <span className="text-xs ml-2 font-mono" style={{ color: "var(--text-muted)" }}>
-                    core_stack
-                  </span>
-                </div>
-                <div className="p-6 space-y-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
-                    Core stack
-                  </p>
-                  <ul className="space-y-3">
-                    {profile.heroHighlights.map((item) => (
-                      <li key={item} className="flex items-start gap-3">
-                        <Check size={14} className="mt-0.5 shrink-0" style={{ color: "var(--primary)" }} />
-                        <span className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="pt-3 flex flex-wrap gap-2" style={{ borderTop: "1px solid var(--border-color)" }}>
-                    {techChips.map((chip) => (
-                      <span key={chip} className="tag-pill">{chip}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/#work" className="btn-primary">
+                View work
+                <ArrowRight size={14} />
+              </Link>
+              <Link href="/#contact" className="btn-secondary">
+                {profile.secondaryCta}
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section id="about" className="section-block py-20 md:py-24">
-        <div className="section-inner">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <div>
-              <p className="section-eyebrow">About</p>
-              <h2 className="section-heading mb-5">{profile.aboutTitle}</h2>
-              <p className="text-base leading-relaxed mb-8" style={{ color: "var(--text-secondary)" }}>
-                {profile.aboutBio}
-              </p>
-              <ul className="space-y-3">
-                {profile.aboutPoints.map((item) => (
-                  <li key={item} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
-                      style={{ background: "var(--primary-soft)" }}>
-                      <Check size={11} style={{ color: "var(--primary)" }} />
-                    </span>
-                    <span className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{item}</span>
-                  </li>
-                ))}
-              </ul>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-3 border border-dashed border-[var(--hairline)]">
+              {heroStats.map((stat, index) => (
+                <div
+                  key={stat.label}
+                  className={`bg-[var(--surface)] px-3 py-5 sm:px-4 sm:py-6 ${
+                    index > 0 ? "border-l border-dashed border-[var(--hairline)]" : ""
+                  }`}
+                >
+                  <p className="matrix-numeral text-2xl sm:text-3xl">{stat.value}</p>
+                  <p className="mt-3 font-mono text-[10px] leading-snug tracking-[0.12em] uppercase text-[var(--text-muted)]">
+                    {stat.label}
+                  </p>
+                </div>
+              ))}
             </div>
 
-            <div>
-              <div className="panel-window">
-                <div className="panel-titlebar justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="flex gap-1.5">
-                      <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
-                      <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                      <div className="w-3 h-3 rounded-full bg-[#27c93f]" />
-                    </div>
-                    <span className="text-xs ml-2 font-mono" style={{ color: "var(--text-muted)" }}>system_architecture</span>
-                  </div>
-                  <span className="text-[10px] uppercase tracking-widest font-mono" style={{ color: "var(--primary)" }}>
-                    production
-                  </span>
-                </div>
-
-                {/* Architecture layers */}
-                <div className="p-6 flex flex-col items-stretch">
-                  {archLayers.map((layer, i) => (
-                    <div key={layer.id} className="flex flex-col items-center">
-                      <div className="w-full rounded-xl p-4"
-                        style={{ background: "var(--bg)", border: `1px solid ${layer.color}35` }}>
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                            style={{ backgroundColor: `${layer.color}15` }}>
-                            <layer.Icon size={15} color={layer.color} />
-                          </div>
-                          <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: "var(--text-muted)" }}>
-                            {layer.label}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {layer.tech.map((t) => (
-                            <span key={t} className="text-[11px] px-2.5 py-1 rounded-md font-medium"
-                              style={{ backgroundColor: `${layer.color}12`, color: layer.color, border: `1px solid ${layer.color}28` }}>
-                              {t}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                      {i < archLayers.length - 1 && (
-                        <div className="arch-connector relative flex flex-col items-center my-1" style={{ height: 36, width: "100%" }}>
-                          <div className="w-px h-full" style={{ background: "linear-gradient(to bottom, color-mix(in srgb, var(--primary) 50%, transparent), transparent)" }} />
-                          <div className="arch-dot" />
-                          <svg className="absolute bottom-0" width="8" height="5" viewBox="0 0 8 5" fill="none">
-                            <path d="M0 0L4 5L8 0" stroke="var(--primary)" strokeOpacity="0.45" strokeWidth="1.5" />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
+            <div className="panel-window hidden flex-1 lg:flex lg:flex-col">
+              <div className="panel-titlebar">
+                <span className="font-mono text-[10px] tracking-[0.16em] uppercase opacity-50">
+                  core_stack
+                </span>
+              </div>
+              <div className="flex flex-1 flex-col justify-between gap-6 p-6">
+                <ul className="space-y-3">
+                  {profile.heroHighlights.map((item) => (
+                    <li key={item} className="flex items-start gap-3">
+                      <Check size={14} className="mt-0.5 shrink-0 opacity-60" />
+                      <span className="text-sm leading-relaxed opacity-85">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap gap-2 border-t border-dashed border-[color-mix(in_srgb,var(--panel-ink)_30%,transparent)] pt-4">
+                  {techChips.map((chip) => (
+                    <span
+                      key={chip}
+                      className="border border-dashed border-[color-mix(in_srgb,var(--panel-ink)_35%,transparent)] px-2 py-0.5 font-mono text-[10px] tracking-[0.08em] uppercase opacity-70"
+                    >
+                      {chip}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -228,29 +143,107 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="stack" className="section-block py-20 md:py-24">
-        <div className="section-inner">
-          <div className="mb-10 md:mb-12">
-            <p className="section-eyebrow">Expertise</p>
-            <h2 className="section-heading mb-3">Technical Stack</h2>
-            <p className="section-subtitle">{profile.stackSubtitle}</p>
+      {/* About */}
+      <section id="about" className="border-b border-dashed border-[var(--hairline)]">
+        <div className="section-inner grid gap-12 py-16 md:py-20 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <p className="section-eyebrow">01 · About</p>
+            <h2 className="section-heading mt-4">{profile.aboutTitle}</h2>
+            <p className="mt-5 text-base leading-relaxed text-[var(--text-secondary)]">
+              {profile.aboutBio}
+            </p>
+            <ul className="mt-8 space-y-4">
+              {profile.aboutPoints.map((item) => (
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border border-dashed border-[var(--hairline)]">
+                    <Check size={11} />
+                  </span>
+                  <span className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-            {skillCards.map((card) => {
-              const Icon = SKILL_ICON_MAP[card.iconKey];
-              return (
-                <div key={card.title} className="surface-card p-6">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: `${card.color}18` }}>
-                      <Icon size={18} color={card.color} />
+          <div className="border border-dashed border-[var(--hairline)] bg-[var(--surface)]">
+            <div className="flex items-center justify-between border-b border-dashed border-[var(--hairline)] px-5 py-4">
+              <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--text-muted)]">
+                system_architecture
+              </span>
+              <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--text-muted)]">
+                production
+              </span>
+            </div>
+            <div className="flex flex-col p-5">
+              {archLayers.map((layer, i) => (
+                <div key={layer.id} className="flex flex-col items-center">
+                  <div className="w-full border border-dashed border-[var(--hairline)] bg-[var(--bg)] p-4">
+                    <div className="mb-3 flex items-center gap-3">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-dashed border-[var(--hairline)]">
+                        <layer.Icon size={15} />
+                      </div>
+                      <span className="font-mono text-[10px] font-semibold tracking-[0.14em] uppercase text-[var(--text-muted)]">
+                        {layer.label}
+                      </span>
                     </div>
-                    <h3 className="font-semibold text-base" style={{ color: "var(--text)" }}>{card.title}</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {layer.tech.map((t) => (
+                        <span key={t} className="tag-pill">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {i < archLayers.length - 1 ? (
+                    <div className="relative my-1 h-8 w-full">
+                      <div className="mx-auto h-full w-px border-l border-dashed border-[var(--hairline)]" />
+                      <div className="arch-dot" />
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stack */}
+      <section id="stack" className="border-b border-dashed border-[var(--hairline)]">
+        <div className="section-inner py-16 md:py-20">
+          <div className="mb-10 max-w-2xl md:mb-12">
+            <p className="section-eyebrow">02 · Expertise</p>
+            <h2 className="section-heading mt-4">Technical Stack</h2>
+            <p className="section-subtitle mt-4">{profile.stackSubtitle}</p>
+          </div>
+
+          <div className="grid grid-cols-1 border border-dashed border-[var(--hairline)] md:grid-cols-2 xl:grid-cols-4">
+            {skillCards.map((card, index) => {
+              const Icon = SKILL_ICON_MAP[card.iconKey];
+              const borders = [
+                "",
+                "border-t md:border-t-0 md:border-l xl:border-l",
+                "border-t md:border-l-0 xl:border-l",
+                "border-t md:border-l xl:border-l",
+              ][index];
+              return (
+                <div
+                  key={card.title}
+                  className={`border-dashed border-[var(--hairline)] bg-[var(--surface)] p-6 ${borders}`}
+                >
+                  <div className="mb-5 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-dashed border-[var(--hairline)]">
+                      <Icon size={18} />
+                    </div>
+                    <h3 className="font-display text-base font-semibold tracking-[-0.02em] uppercase">
+                      {card.title}
+                    </h3>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {card.tags.map((tag) => (
-                      <span key={tag} className="tag-pill">{tag}</span>
+                      <span key={tag} className="tag-pill">
+                        {tag}
+                      </span>
                     ))}
                   </div>
                 </div>
@@ -260,151 +253,203 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="experience" className="section-block py-20 md:py-24">
-        <div className="section-inner">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10 md:mb-12">
+      {/* Experience */}
+      <section id="experience" className="border-b border-dashed border-[var(--hairline)]">
+        <div className="section-inner py-16 md:py-20">
+          <div className="mb-10 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="section-eyebrow">Career</p>
-              <h2 className="section-heading">Work Experience</h2>
+              <p className="section-eyebrow">03 · Career</p>
+              <h2 className="section-heading mt-4">Work Experience</h2>
             </div>
-            <p className="section-subtitle md:max-w-md md:text-right">
-              {profile.experienceSubtitle}
-            </p>
+            <p className="section-subtitle md:text-right">{profile.experienceSubtitle}</p>
           </div>
 
           <div className="space-y-4">
             {workExperience.map((job) => (
-              <div key={job.company} className="surface-card p-6 md:p-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
-                  <div className="md:pr-4 md:border-r" style={{ borderColor: "var(--border-color)" }}>
-                    <h3 className="font-bold text-lg" style={{ color: "var(--text)" }}>{job.role}</h3>
-                    <p className="text-sm mt-1.5 font-medium" style={{ color: "var(--primary)" }}>{job.company}</p>
-                    <p className="text-xs mt-2 font-medium" style={{ color: "var(--text-muted)" }}>{job.period}</p>
+              <article
+                key={job.company}
+                className="border border-dashed border-[var(--hairline)] bg-[var(--surface)]"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-12">
+                  <div className="border-b border-dashed border-[var(--hairline)] p-6 md:col-span-4 md:border-r md:border-b-0 md:p-8">
+                    <h3 className="font-display text-xl font-bold tracking-[-0.03em] uppercase">
+                      {job.role}
+                    </h3>
+                    <p className="mt-3 font-mono text-xs tracking-[0.1em] uppercase text-[var(--text-muted)]">
+                      {job.company}
+                    </p>
+                    <p className="mt-2 font-mono text-[10px] tracking-[0.12em] uppercase text-[var(--text-muted)]">
+                      {job.period}
+                    </p>
                   </div>
-                  <div className="md:col-span-3 space-y-4">
+                  <div className="space-y-4 p-6 md:col-span-8 md:p-8">
                     {job.achievements.map((item, j) => (
                       <div key={j} className="flex gap-4">
-                        <span className="font-mono text-xs font-bold mt-1 flex-shrink-0 w-6"
-                          style={{ color: "var(--primary)" }}>
+                        <span className="matrix-numeral w-7 shrink-0 text-sm text-[var(--text-muted)]">
                           {String(j + 1).padStart(2, "0")}
                         </span>
-                        <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{item}</p>
+                        <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                          {item}
+                        </p>
                       </div>
                     ))}
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="work" className="section-block py-20 md:py-24">
-        <div className="section-inner">
-          <div className="mb-10 md:mb-12">
-            <p className="section-eyebrow">Portfolio</p>
-            <h2 className="section-heading mb-3">Featured Projects</h2>
-            <p className="section-subtitle">{profile.workSubtitle}</p>
+      {/* Work */}
+      <section id="work" className="border-b border-dashed border-[var(--hairline)]">
+        <div className="section-inner py-16 md:py-20">
+          <div className="mb-10 max-w-2xl md:mb-12">
+            <p className="section-eyebrow">04 · Portfolio</p>
+            <h2 className="section-heading mt-4">Featured Projects</h2>
+            <p className="section-subtitle mt-4">{profile.workSubtitle}</p>
           </div>
 
-          <div className="space-y-6">
-            {featuredProjects.map((project) => (
-              <div key={project.title} className="surface-card overflow-hidden">
+          <div className="space-y-5">
+            {featuredProjects.map((project, index) => (
+              <article
+                key={project.title}
+                className="border border-dashed border-[var(--hairline)] bg-[var(--surface)]"
+              >
                 <div className="flex flex-col lg:flex-row">
-                  <div className="lg:w-3/5 flex-shrink-0" style={{ background: "var(--bg)" }}>
+                  <div className="relative min-h-[240px] bg-[var(--bg)] lg:w-[58%] lg:min-h-[320px]">
                     {project.featureGraphic ? (
                       <>
                         <Image
                           src={project.featureGraphic}
                           alt={`${project.title} feature graphic`}
-                          width={900}
-                          height={600}
-                          className="w-full h-full object-contain dark:hidden"
-                          priority={project === featuredProjects[0]}
+                          fill
+                          className="object-contain p-4 dark:hidden"
+                          sizes="(max-width: 1024px) 100vw, 58vw"
+                          priority={index === 0}
                         />
-                        {project.featureGraphicDark && (
+                        {project.featureGraphicDark ? (
                           <Image
                             src={project.featureGraphicDark}
                             alt={`${project.title} feature graphic`}
-                            width={900}
-                            height={600}
-                            className="hidden w-full h-full object-contain dark:block"
-                            priority={project === featuredProjects[0]}
+                            fill
+                            className="hidden object-contain p-4 dark:block"
+                            sizes="(max-width: 1024px) 100vw, 58vw"
+                            priority={index === 0}
                           />
-                        )}
+                        ) : null}
                       </>
-                    ) : (
-                      <div className="w-full h-full min-h-[320px]" style={{ background: "var(--surface)" }} />
-                    )}
+                    ) : null}
                   </div>
 
-                  <div className="lg:w-2/5 p-6 md:p-8 flex flex-col gap-5 lg:border-l"
-                    style={{ borderColor: "var(--border-color)" }}>
-                    <div className="flex flex-wrap gap-2">
-                      {project.stack.map((tag) => (
-                        <span key={tag} className="tag-pill text-[11px] uppercase tracking-wide">{tag}</span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      {project.logo && (
-                        <div className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0"
-                          style={{ border: "1px solid var(--border-color)" }}>
-                          <Image src={project.logo} alt={`${project.title} logo`}
-                            width={48} height={48} className="object-cover w-full h-full" />
-                        </div>
-                      )}
-                      <div>
-                        <h3 className="text-lg font-bold leading-tight" style={{ color: "var(--text)" }}>{project.title}</h3>
-                        <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>{project.type}</p>
+                  <div className="flex flex-col justify-between gap-6 border-t border-dashed border-[var(--hairline)] p-6 md:p-8 lg:w-[42%] lg:border-t-0 lg:border-l">
+                    <div className="space-y-5">
+                      <div className="flex flex-wrap gap-2">
+                        {project.stack.map((tag) => (
+                          <span key={tag} className="tag-pill">
+                            {tag}
+                          </span>
+                        ))}
                       </div>
+
+                      <div className="flex items-center gap-3">
+                        {project.logo ? (
+                          <div className="h-11 w-11 shrink-0 overflow-hidden border border-dashed border-[var(--hairline)]">
+                            <Image
+                              src={project.logo}
+                              alt={`${project.title} logo`}
+                              width={44}
+                              height={44}
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        ) : null}
+                        <div>
+                          <p className="font-mono text-[10px] tracking-[0.14em] uppercase text-[var(--text-muted)]">
+                            {String(index + 1).padStart(2, "0")} · {project.type}
+                          </p>
+                          <h3 className="mt-1 font-display text-xl font-bold tracking-[-0.03em] uppercase">
+                            {project.title}
+                          </h3>
+                        </div>
+                      </div>
+
+                      <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                        {project.description}
+                      </p>
                     </div>
 
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--text-secondary)" }}>{project.description}</p>
-
-                    <div className="flex items-center gap-3 pt-1">
-                      <Link href={project.url} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm py-2.5 px-4">
-                        View live product <ArrowRight size={14} />
+                    <div>
+                      <Link
+                        href={project.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-primary"
+                      >
+                        View live product
+                        <ArrowRight size={14} />
                       </Link>
                     </div>
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="contact" className="section-block py-20 md:py-28">
-        <div className="section-inner">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="section-eyebrow">Contact</p>
-            <h2 className="section-heading text-3xl md:text-4xl mb-4">{profile.ctaTitle}</h2>
-            <p className="section-subtitle mx-auto mb-10">{profile.ctaSubtitle}</p>
+      {/* Contact */}
+      <section id="contact">
+        <div className="section-inner py-16 md:py-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="section-eyebrow">05 · Contact</p>
+            <h2 className="section-heading mt-4">{profile.ctaTitle}</h2>
+            <p className="section-subtitle mx-auto mt-4">{profile.ctaSubtitle}</p>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left">
-              <a href={profile.contact.email.href} className="contact-card">
-                <Mail size={18} style={{ color: "var(--primary)" }} />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>Email</p>
-                  <p className="text-sm truncate" style={{ color: "var(--text)" }}>{profile.contact.email.label}</p>
-                </div>
-              </a>
-              <a href={profile.contact.linkedin.href} target="_blank" rel="noopener noreferrer" className="contact-card">
-                <Linkedin size={18} style={{ color: "var(--primary)" }} />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>LinkedIn</p>
-                  <p className="text-sm truncate" style={{ color: "var(--text)" }}>{profile.contact.linkedin.label}</p>
-                </div>
-              </a>
-              <a href={profile.contact.github.href} target="_blank" rel="noopener noreferrer" className="contact-card">
-                <Github size={18} style={{ color: "var(--primary)" }} />
-                <div className="min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>GitHub</p>
-                  <p className="text-sm truncate" style={{ color: "var(--text)" }}>{profile.contact.github.label}</p>
-                </div>
-              </a>
-            </div>
+          <div className="mx-auto mt-10 grid max-w-4xl grid-cols-1 border border-dashed border-[var(--hairline)] sm:grid-cols-3">
+            <a
+              href={profile.contact.email.href}
+              className="group flex min-h-[8.5rem] flex-col justify-between bg-[var(--surface)] p-6 transition-colors hover:bg-[var(--text)] hover:text-[var(--bg)] sm:border-r sm:border-dashed sm:border-[var(--hairline)]"
+            >
+              <Mail size={20} className="opacity-70" />
+              <div>
+                <p className="font-mono text-[10px] font-semibold tracking-[0.14em] uppercase opacity-55">
+                  Email
+                </p>
+                <p className="mt-2 truncate text-sm font-medium">
+                  {profile.contact.email.label}
+                </p>
+              </div>
+            </a>
+            <a
+              href={profile.contact.linkedin.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex min-h-[8.5rem] flex-col justify-between border-t border-dashed border-[var(--hairline)] bg-[var(--surface)] p-6 transition-colors hover:bg-[var(--text)] hover:text-[var(--bg)] sm:border-t-0 sm:border-r"
+            >
+              <Linkedin size={20} className="opacity-70" />
+              <div>
+                <p className="font-mono text-[10px] font-semibold tracking-[0.14em] uppercase opacity-55">
+                  LinkedIn
+                </p>
+                <p className="mt-2 text-sm font-medium">{profile.contact.linkedin.label}</p>
+              </div>
+            </a>
+            <a
+              href={profile.contact.github.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex min-h-[8.5rem] flex-col justify-between border-t border-dashed border-[var(--hairline)] bg-[var(--surface)] p-6 transition-colors hover:bg-[var(--text)] hover:text-[var(--bg)] sm:border-t-0"
+            >
+              <Github size={20} className="opacity-70" />
+              <div>
+                <p className="font-mono text-[10px] font-semibold tracking-[0.14em] uppercase opacity-55">
+                  GitHub
+                </p>
+                <p className="mt-2 text-sm font-medium">{profile.contact.github.label}</p>
+              </div>
+            </a>
           </div>
         </div>
       </section>

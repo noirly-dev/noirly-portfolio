@@ -1,61 +1,66 @@
+import type { Metadata } from "next";
+import { Hanken_Grotesk, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import type { Metadata } from "next";
-import { Lexend, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const lexend = Lexend({
-  variable: "--font-lexend",
-  subsets: ["latin"],
-});
-
 const spaceGrotesk = Space_Grotesk({
-  variable: "--font-display",
+  variable: "--font-space",
   subsets: ["latin"],
   weight: ["500", "600", "700"],
 });
 
+const hankenGrotesk = Hanken_Grotesk({
+  variable: "--font-hanken",
+  subsets: ["latin"],
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-  title: "Aneesh Pissay",
-  description: "Aneesh Pissay's Portfolio - Full Stack and Mobile App Developer",
+  title: "Noirly Portfolio · Aneesh Pissay",
+  description:
+    "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
 };
+
+const navLinks = [
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Stack", href: "/#stack" },
+  { label: "Experience", href: "/#experience" },
+  { label: "Work", href: "/#work" },
+  { label: "Contact", href: "/#contact" },
+];
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "About", href: "/#about" },
-    { label: "Stack", href: "/#stack" },
-    { label: "Experience", href: "/#experience" },
-    { label: "Work", href: "/#work" },
-    { label: "Contact", href: "/#contact" },
-  ];
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        {/* Restore theme before first paint to avoid flash */}
-        <script dangerouslySetInnerHTML={{ __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
           try {
             var t = localStorage.getItem('theme');
             if (t === 'light') document.documentElement.classList.remove('dark');
             else document.documentElement.classList.add('dark');
           } catch(e) {}
-        `}} />
+        `,
+          }}
+        />
       </head>
       <body
-        className={`${lexend.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${spaceGrotesk.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable} flex min-h-dvh flex-col antialiased`}
       >
-        <Header
-          title="Aneesh Pissay"
-          navLinks={navLinks}
-        />
+        <Header title="Noirly Portfolio" navLinks={navLinks} />
         {children}
-        <Footer
-          title="Aneesh Pissay"
-        />
+        <Footer title="Noirly Portfolio" />
       </body>
     </html>
   );
