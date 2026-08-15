@@ -65,16 +65,18 @@ export default function Home() {
 
   return (
     <main className="page-shell flex-1">
-      {/* Hero */}
+      {/* Hero — brand mark as primary visual */}
       <section id="home" className="border-b border-dashed border-[var(--hairline)]">
-        <div className="section-inner grid gap-12 py-14 md:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:py-24">
-          <div className="flex flex-col justify-between gap-10">
+        <div className="section-inner grid items-center gap-10 py-12 md:gap-14 md:py-16 lg:grid-cols-[minmax(0,1fr)_minmax(16rem,22rem)] lg:gap-16 lg:py-20">
+          <div className="flex flex-col gap-8">
             <div>
-              <p className="section-eyebrow">{profile.badge}</p>
-              <p className="mt-5 font-mono text-[11px] tracking-[0.14em] uppercase text-[var(--text-muted)]">
-                {profile.name}
+              <p className="font-display text-[clamp(2rem,5vw,3.25rem)] font-bold leading-[0.95] tracking-[-0.05em] uppercase">
+                Noirly Portfolio
               </p>
-              <h1 className="mt-3 max-w-[14ch] font-display text-[clamp(2.75rem,8vw,5.5rem)] leading-[0.88] font-bold tracking-[-0.06em] uppercase">
+              <p className="mt-3 font-mono text-[11px] tracking-[0.16em] uppercase text-[var(--text-muted)]">
+                {profile.name} · {profile.badge}
+              </p>
+              <h1 className="mt-8 max-w-[16ch] font-display text-[clamp(2.25rem,6.5vw,4.25rem)] leading-[0.9] font-bold tracking-[-0.055em] uppercase">
                 <span className="text-perforated">{profile.title}</span>
                 <br />
                 {profile.titleAccent}
@@ -93,42 +95,40 @@ export default function Home() {
                 {profile.secondaryCta}
               </Link>
             </div>
-          </div>
 
-          <div className="flex flex-col gap-4">
             <div className="grid grid-cols-3 border border-dashed border-[var(--hairline)]">
               {heroStats.map((stat, index) => (
                 <div
                   key={stat.label}
-                  className={`bg-[var(--surface)] px-3 py-5 sm:px-4 sm:py-6 ${
+                  className={`bg-[var(--surface)] px-3 py-4 sm:px-4 sm:py-5 ${
                     index > 0 ? "border-l border-dashed border-[var(--hairline)]" : ""
                   }`}
                 >
-                  <p className="matrix-numeral text-2xl sm:text-3xl">{stat.value}</p>
-                  <p className="mt-3 font-mono text-[10px] leading-snug tracking-[0.12em] uppercase text-[var(--text-muted)]">
+                  <p className="matrix-numeral text-xl sm:text-2xl">{stat.value}</p>
+                  <p className="mt-2 font-mono text-[10px] leading-snug tracking-[0.12em] uppercase text-[var(--text-muted)]">
                     {stat.label}
                   </p>
                 </div>
               ))}
             </div>
+          </div>
 
-            <div className="hidden flex-1 flex-col border border-dashed border-[var(--hairline)] bg-[var(--surface)] lg:flex">
-              <div className="flex items-center border-b border-dashed border-[var(--hairline)] px-5 py-4">
+          <div className="hidden flex-col lg:flex">
+            <div className="w-full border border-dashed border-[var(--hairline)] bg-[var(--surface)]">
+              <div className="flex items-center border-b border-dashed border-[var(--hairline)] px-5 py-3">
                 <span className="font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--text-muted)]">
                   core_stack
                 </span>
               </div>
-              <div className="flex flex-1 flex-col justify-between gap-6 p-6">
-                <ul className="space-y-3">
-                  {profile.heroHighlights.map((item) => (
-                    <li key={item} className="flex items-start gap-3">
-                      <Check size={14} className="mt-0.5 shrink-0 text-[var(--text-muted)]" />
-                      <span className="text-sm leading-relaxed text-[var(--text-secondary)]">
-                        {item}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="space-y-3 p-5">
+                {profile.heroHighlights.map((item) => (
+                  <div key={item} className="flex items-start gap-3">
+                    <Check size={14} className="mt-0.5 shrink-0 text-[var(--text-muted)]" />
+                    <span className="text-sm leading-relaxed text-[var(--text-secondary)]">
+                      {item}
+                    </span>
+                  </div>
+                ))}
                 <div className="flex flex-wrap gap-2 border-t border-dashed border-[var(--hairline)] pt-4">
                   {techChips.map((chip) => (
                     <span key={chip} className="tag-pill">
@@ -316,14 +316,14 @@ export default function Home() {
                 className="border border-dashed border-[var(--hairline)] bg-[var(--surface)]"
               >
                 <div className="flex flex-col lg:flex-row">
-                  <div className="relative min-h-[240px] bg-[var(--bg)] lg:w-[58%] lg:min-h-[320px]">
+                  <div className="relative min-h-[220px] bg-[var(--bg)] lg:w-[58%] lg:min-h-[300px]">
                     {project.featureGraphic ? (
                       <>
                         <Image
                           src={project.featureGraphic}
                           alt={`${project.title} feature graphic`}
                           fill
-                          className="object-contain p-4 dark:hidden"
+                          className="object-contain p-6 dark:hidden"
                           sizes="(max-width: 1024px) 100vw, 58vw"
                           priority={index === 0}
                         />
@@ -332,7 +332,7 @@ export default function Home() {
                             src={project.featureGraphicDark}
                             alt={`${project.title} feature graphic`}
                             fill
-                            className="hidden object-contain p-4 dark:block"
+                            className="hidden object-contain p-6 dark:block"
                             sizes="(max-width: 1024px) 100vw, 58vw"
                             priority={index === 0}
                           />
@@ -353,14 +353,23 @@ export default function Home() {
 
                       <div className="flex items-center gap-3">
                         {project.logo ? (
-                          <div className="h-11 w-11 shrink-0 overflow-hidden border border-dashed border-[var(--hairline)]">
+                          <div className="relative h-14 w-14 shrink-0 overflow-hidden border border-dashed border-[var(--hairline)]">
                             <Image
                               src={project.logo}
                               alt={`${project.title} logo`}
-                              width={44}
-                              height={44}
-                              className="h-full w-full object-cover"
+                              width={56}
+                              height={56}
+                              className="h-full w-full object-cover dark:hidden"
                             />
+                            {project.logoDark ? (
+                              <Image
+                                src={project.logoDark}
+                                alt={`${project.title} logo`}
+                                width={56}
+                                height={56}
+                                className="absolute inset-0 hidden h-full w-full object-cover dark:block"
+                              />
+                            ) : null}
                           </div>
                         ) : null}
                         <div>

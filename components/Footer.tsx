@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/BrandMark";
 import { profile } from "@/data/profile";
 
 interface FooterProps {
@@ -22,9 +23,12 @@ export function Footer({ title }: FooterProps) {
       <div className="section-inner py-12 md:py-14">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-8">
           <div className="md:col-span-5">
-            <p className="font-display text-lg font-bold tracking-[-0.04em] uppercase">
-              {title}
-            </p>
+            <div className="flex items-center gap-4 text-[var(--text)]">
+              <BrandMark className="h-14 w-14 shrink-0 md:h-16 md:w-16" />
+              <p className="font-display text-xl font-bold tracking-[-0.04em] uppercase md:text-2xl">
+                {title}
+              </p>
+            </div>
             <p className="mt-2 text-sm text-[var(--text-secondary)]">
               {profile.name} · {profile.role}
             </p>

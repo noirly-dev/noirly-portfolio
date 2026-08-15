@@ -24,6 +24,21 @@ export const metadata: Metadata = {
   title: "Noirly Portfolio · Aneesh Pissay",
   description:
     "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
+  icons: {
+    icon: [
+      {
+        url: "/logo-mark-light.svg",
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/logo-mark-dark.svg",
+        type: "image/svg+xml",
+        media: "(prefers-color-scheme: light)",
+      },
+    ],
+    apple: "/logo-dark.png",
+  },
 };
 
 const navLinks = [

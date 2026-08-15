@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Sun, Moon, Menu, X } from "lucide-react";
+import { BrandMark } from "@/components/BrandMark";
 
 interface NavLink {
   label: string;
@@ -76,14 +77,15 @@ export function Header({ title, navLinks }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-dashed border-[var(--hairline)] bg-[color-mix(in_srgb,var(--bg)_92%,transparent)] backdrop-blur-md">
-      <div className="section-inner flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
+    <header className="sticky top-0 z-50 border-b border-dashed border-[var(--hairline)] bg-[color-mix(in_srgb,var(--bg)_94%,transparent)] backdrop-blur-md">
+      <div className="section-inner flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
         <Link
           href="/#home"
-          className="min-w-0 shrink-0"
+          className="flex min-w-0 shrink-0 items-center gap-3.5 text-[var(--text)]"
           onClick={() => setMenuOpen(false)}
         >
-          <span className="block font-display text-base font-bold tracking-[-0.04em] uppercase md:text-lg">
+          <BrandMark className="h-12 w-12 shrink-0 md:h-14 md:w-14" />
+          <span className="hidden truncate font-display text-lg font-bold tracking-[-0.04em] uppercase sm:block md:text-xl">
             {title}
           </span>
         </Link>
@@ -112,18 +114,18 @@ export function Header({ title, navLinks }: HeaderProps) {
             type="button"
             onClick={toggleTheme}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            className="flex h-9 w-9 items-center justify-center border border-dashed border-[var(--hairline)] text-[var(--text-muted)] transition-colors hover:bg-[var(--text)] hover:text-[var(--bg)]"
+            className="flex h-10 w-10 items-center justify-center border border-dashed border-[var(--hairline)] text-[var(--text-muted)] transition-colors hover:bg-[var(--text)] hover:text-[var(--bg)]"
           >
-            {isDark ? <Sun size={15} /> : <Moon size={15} />}
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
           <button
             type="button"
             onClick={() => setMenuOpen((open) => !open)}
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
-            className="flex h-9 w-9 items-center justify-center border border-dashed border-[var(--hairline)] lg:hidden"
+            className="flex h-10 w-10 items-center justify-center border border-dashed border-[var(--hairline)] lg:hidden"
           >
-            {menuOpen ? <X size={16} /> : <Menu size={16} />}
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
       </div>
@@ -133,7 +135,7 @@ export function Header({ title, navLinks }: HeaderProps) {
           <button
             type="button"
             aria-label="Close menu"
-            className="fixed inset-0 top-16 z-40 bg-black/55 lg:hidden"
+            className="fixed inset-0 top-[4.5rem] z-40 bg-black/55 lg:hidden"
             onClick={() => setMenuOpen(false)}
           />
           <nav className="absolute inset-x-0 top-full z-50 border-b border-dashed border-[var(--hairline)] bg-[var(--bg)] px-5 py-2 lg:hidden">

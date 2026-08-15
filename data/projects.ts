@@ -1,57 +1,50 @@
-import type { StaticImageData } from "next/image";
-import noirlyVisionFeatureGraphic from "@/public/projects/noirly-vision-feature-graphic.png";
-import noirlyVisionFeatureGraphicDark from "@/public/projects/noirly-vision-feature-graphic-dark.png";
-import noirlyVisionLogo from "@/public/projects/noirly-vision-logo.png";
-import noirlyCalculatorFeatureGraphic from "@/public/projects/noirly-calculator-feature-graphic.png";
-import noirlyCalculatorFeatureGraphicDark from "@/public/projects/noirly-calculator-feature-graphic-dark.png";
-import noirlyCalculatorLogo from "@/public/projects/noirly-calculator-logo.png";
-import noirlyAlgolabFeatureGraphic from "@/public/projects/noirly-algolab-feature-graphic.png";
-import noirlyAlgolabFeatureGraphicDark from "@/public/projects/noirly-algolab-feature-graphic-dark.png";
-import noirlyAlgolabLogo from "@/public/projects/noirly-algolab-logo.png";
-
 export interface FeaturedProject {
   title: string;
   type: string;
   description: string;
   stack: string[];
   url: string;
-  featureGraphic: StaticImageData | string | null;
-  featureGraphicDark: StaticImageData | string | null;
-  logo: StaticImageData | string | null;
+  featureGraphic: string | null;
+  featureGraphicDark: string | null;
+  logo: string | null;
+  logoDark: string | null;
 }
 
 export const featuredProjects: FeaturedProject[] = [
   {
-    title: "Noirly Vision",
-    type: "Productivity Product",
+    title: "Noirly Flow",
+    type: "Task Management",
     description:
-      "A strategic personal OS for turning vision into execution — with goals, milestones, focus sessions, a knowledge vault, and analytics in one connected workspace.",
-    stack: ["Next.js", "React", "TypeScript", "MongoDB", "Firebase"],
-    url: "https://noirly.vision.aneesh-pissay.in/",
-    featureGraphic: noirlyVisionFeatureGraphic,
-    featureGraphicDark: noirlyVisionFeatureGraphicDark,
-    logo: noirlyVisionLogo,
+      "Boards, workspaces, and realtime collaboration for Noirly products — signed in through Noirly Identity.",
+    stack: ["Next.js", "React", "TypeScript", "MongoDB", "Auth.js"],
+    url: "https://noirly.flow.aneesh-pissay.in/",
+    featureGraphic: "/projects/noirly-flow-feature-light.png",
+    featureGraphicDark: "/projects/noirly-flow-feature-dark.png",
+    logo: "/projects/noirly-flow-light.png",
+    logoDark: "/projects/noirly-flow-dark.png",
   },
   {
-    title: "Noirly AlgoLab",
-    type: "EdTech Product",
+    title: "Noirly Ledger",
+    type: "Finance",
     description:
-      "A visual DSA learning platform with step-by-step animations, synced code tracing, and structured lessons from arrays to graphs.",
-    stack: ["Next.js", "React", "TypeScript", "MongoDB"],
-    url: "https://noirly.algolab.aneesh-pissay.in/",
-    featureGraphic: noirlyAlgolabFeatureGraphic,
-    featureGraphicDark: noirlyAlgolabFeatureGraphicDark,
-    logo: noirlyAlgolabLogo,
+      "Personal and team money tracking — budgets, expenses, pools, approvals, and reports across workspaces.",
+    stack: ["Next.js", "React", "TypeScript", "MongoDB", "Auth.js"],
+    url: "https://noirly.ledger.aneesh-pissay.in/",
+    featureGraphic: "/projects/noirly-ledger-feature-light.png",
+    featureGraphicDark: "/projects/noirly-ledger-feature-dark.png",
+    logo: "/projects/noirly-ledger-light.png",
+    logoDark: "/projects/noirly-ledger-dark.png",
   },
   {
-    title: "Noirly Calculator",
-    type: "Utility Product",
+    title: "Noirly Pulse",
+    type: "Messaging",
     description:
-      "A full-featured browser calculator with basic, scientific, unit conversion, graphing, and programmer modes. Works offline with local history.",
-    stack: ["React", "TypeScript", "Vite"],
-    url: "https://noirly.calculator.aneesh-pissay.in/",
-    featureGraphic: noirlyCalculatorFeatureGraphic,
-    featureGraphicDark: noirlyCalculatorFeatureGraphicDark,
-    logo: noirlyCalculatorLogo,
+      "Realtime chat for workspaces — channels, DMs, threads, reactions, and presence.",
+    stack: ["Next.js", "React", "TypeScript", "MongoDB", "Auth.js"],
+    url: "https://noirly.pulse.aneesh-pissay.in/",
+    featureGraphic: "/projects/noirly-pulse-feature-light.png",
+    featureGraphicDark: "/projects/noirly-pulse-feature-dark.png",
+    logo: "/projects/noirly-pulse-light.png",
+    logoDark: "/projects/noirly-pulse-dark.png",
   },
 ];

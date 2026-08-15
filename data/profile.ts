@@ -40,20 +40,20 @@ export interface Profile {
 export const profile: Profile = {
   name: "Aneesh Pissay",
   role: "Full Stack Developer",
-  badge: "FULL STACK DEVELOPER • 4+ YEARS EXPERIENCE",
+  badge: "FULL STACK DEVELOPER • 5+ YEARS EXPERIENCE",
   title: "Building Scalable",
   titleAccent: "Web & Mobile Experiences",
   description:
     "Full stack software design and delivery — responsive interfaces, mobile apps, APIs, databases, and production deployments.",
   heroStats: [
-    { value: "4+", label: "Years experience" },
+    { value: "5+", label: "Years experience" },
     { value: "Full Stack", label: "Web + Mobile" },
     { value: "Cloud Ready", label: "Docker + CI/CD" },
   ],
   techChips: ["React", "Next.js", "TypeScript", "React Native", "Node.js", "MongoDB", "AWS", "Docker"],
   aboutTitle: "Approach to engineering",
   aboutBio:
-    "Across 4+ years in the industry, work has spanned the full stack — schema design, API contracts, component libraries, mobile builds, and release pipelines. The focus is readable code, sensible scaling, and polished product experiences.",
+    "Across 5+ years in the industry, work has spanned the full stack — schema design, API contracts, component libraries, mobile builds, and release pipelines. The focus is readable code, sensible scaling, and polished product experiences.",
   aboutPoints: [
     "Clear architecture — typed interfaces, reusable components, and APIs that are straightforward to extend",
     "End-to-end ownership — comfortable moving from UI details to database queries and deployment config",
