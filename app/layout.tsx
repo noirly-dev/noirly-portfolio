@@ -28,15 +28,23 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
+        url: "/favicon-48.png",
+        type: "image/png",
+        sizes: "48x48",
+      },
+      {
+        url: "/favicon-192.png",
+        type: "image/png",
+        sizes: "192x192",
+      },
+      {
         url: "/logo-dark.png",
         type: "image/png",
-        sizes: "2048x2048",
         media: "(prefers-color-scheme: dark)",
       },
       {
         url: "/logo-light.png",
         type: "image/png",
-        sizes: "2048x2048",
         media: "(prefers-color-scheme: light)",
       },
     ],
@@ -75,6 +83,29 @@ const navLinks = [
   { label: "Contact", href: "/#contact" },
 ];
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: "Noirly Portfolio",
+      url: "https://www.aneesh-pissay.in/",
+    },
+    {
+      "@type": "Person",
+      name: "Aneesh Pissay",
+      url: "https://www.aneesh-pissay.in/",
+      image: "https://www.aneesh-pissay.in/favicon-192.png",
+    },
+    {
+      "@type": "Organization",
+      name: "Noirly Portfolio",
+      url: "https://www.aneesh-pissay.in/",
+      logo: "https://www.aneesh-pissay.in/favicon-192.png",
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -83,6 +114,10 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
