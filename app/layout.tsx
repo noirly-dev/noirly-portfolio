@@ -21,23 +21,48 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.aneesh-pissay.in"),
   title: "Noirly Portfolio · Aneesh Pissay",
   description:
     "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
   icons: {
     icon: [
       {
-        url: "/logo-mark-light.svg",
-        type: "image/svg+xml",
+        url: "/logo-dark.png",
+        type: "image/png",
+        sizes: "2048x2048",
         media: "(prefers-color-scheme: dark)",
       },
       {
-        url: "/logo-mark-dark.svg",
-        type: "image/svg+xml",
+        url: "/logo-light.png",
+        type: "image/png",
+        sizes: "2048x2048",
         media: "(prefers-color-scheme: light)",
       },
     ],
-    apple: "/logo-dark.png",
+  },
+  openGraph: {
+    title: "Noirly Portfolio · Aneesh Pissay",
+    description:
+      "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
+    url: "https://www.aneesh-pissay.in",
+    siteName: "Noirly Portfolio",
+    images: [
+      {
+        url: "/logo-dark.png",
+        width: 2048,
+        height: 2048,
+        alt: "Noirly Portfolio",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Noirly Portfolio · Aneesh Pissay",
+    description:
+      "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
+    images: ["/logo-dark.png"],
   },
 };
 
