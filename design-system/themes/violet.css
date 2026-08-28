@@ -1,0 +1,102 @@
+/* Theme: Soft Violet (violet)
+ * WCAG AA verified — see design-system/contrast-manifest.json
+ * Checker: https://colourcontrast.cc/
+ */
+
+:root {
+  --bg: #f9f8fc;
+  --bg-deep: color-mix(in srgb, #f9f8fc 88%, #120a1f 12%);
+  --surface: #ffffff;
+  --surface-2: color-mix(in srgb, #ffffff 92%, #120a1f 8%);
+
+  --text: #120a1f;
+  --text-secondary: rgb(18 10 31 / 0.66);
+  --text-muted: rgb(18 10 31 / 0.58);
+
+  --hairline: rgb(18 10 31 / 0.1);
+  --hairline-strong: rgb(18 10 31 / 0.18);
+
+  --accent: #6d28d9;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(109 40 217 / 0.1);
+
+  --card-gradient: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.9) 0%,
+    color-mix(in srgb, #ffffff 72%, #f9f8fc 28%) 100%
+  );
+  --card-sheen: inset 0 1px 0 0 rgb(255 255 255 / 0.9);
+  --elev-1: 0 1px 2px -1px rgb(18 10 31 / 0.08), 0 4px 12px -6px rgb(18 10 31 / 0.1);
+  --elev-2: 0 2px 4px -2px rgb(18 10 31 / 0.08), 0 18px 40px -20px rgb(18 10 31 / 0.18);
+  --elev-3: 0 4px 8px -4px rgb(18 10 31 / 0.1), 0 32px 64px -28px rgb(18 10 31 / 0.24);
+
+  --glow: rgb(18 10 31 / 0.06);
+  --grain-opacity: 0.035;
+
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--text);
+  --primary-foreground: var(--bg);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: var(--accent-ink);
+  --destructive: #dc2626;
+  --border: var(--hairline);
+  --input: var(--hairline-strong);
+  --ring: var(--accent);
+}
+
+.dark {
+  --bg: #07050c;
+  --bg-deep: #000000;
+  --surface: #100d18;
+  --surface-2: color-mix(in srgb, #100d18 88%, #f5f0ff 12%);
+
+  --text: #f5f0ff;
+  --text-secondary: rgb(245 240 255 / 0.68);
+  --text-muted: rgb(245 240 255 / 0.49);
+
+  --hairline: rgb(245 240 255 / 0.09);
+  --hairline-strong: rgb(245 240 255 / 0.18);
+
+  --accent: #a78bfa;
+  --accent-ink: #1a0a2e;
+  --accent-soft: rgb(167 139 250 / 0.14);
+
+  --card-gradient: linear-gradient(
+    180deg,
+    rgb(245 240 255 / 0.055) 0%,
+    rgb(245 240 255 / 0.012) 100%
+  );
+  --card-sheen: inset 0 1px 0 0 rgb(245 240 255 / 0.07);
+  --elev-1: 0 1px 2px -1px rgb(0 0 0 / 0.6), 0 4px 12px -6px rgb(0 0 0 / 0.5);
+  --elev-2: 0 2px 4px -2px rgb(0 0 0 / 0.6), 0 18px 40px -20px rgb(0 0 0 / 0.7);
+  --elev-3: 0 4px 8px -4px rgb(0 0 0 / 0.6), 0 32px 64px -28px rgb(0 0 0 / 0.8);
+
+  --glow: rgb(245 240 255 / 0.08);
+  --grain-opacity: 0.05;
+
+  --background: var(--bg);
+  --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--text);
+  --primary-foreground: var(--bg);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
+  --muted: var(--surface-2);
+  --muted-foreground: var(--text-muted);
+  --accent-foreground: var(--accent-ink);
+  --destructive: #f87171;
+  --border: var(--hairline);
+  --input: var(--hairline-strong);
+  --ring: var(--accent);
+}

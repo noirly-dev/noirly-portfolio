@@ -3,11 +3,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ==========================================================================
+   NOIRLY — Design tokens
+   Style: Exaggerated Minimalism (monochrome base + one restrained accent)
+   Motion: Framer Motion. Every token below is animation-safe
+   (transform/opacity/color only — nothing that triggers layout).
+   ========================================================================== */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-hanken);
-  --font-display: var(--font-space);
+  --font-display: var(--font-fraunces);
   --font-mono: var(--font-jetbrains);
   --color-ring: var(--ring);
   --color-input: var(--input);
@@ -25,93 +32,65 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: 0;
-  --radius-md: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
 }
 
 :root {
-  --radius: 0;
-  --bg: #f5f5f5;
-  --surface: #ececec;
-  --surface-variant: #e4e4e4;
-  --primary: #000000;
-  --primary-hover: #000000;
-  --primary-soft: rgb(0 0 0 / 0.08);
-  --text: #000000;
-  --text-secondary: rgb(0 0 0 / 0.68);
-  --text-muted: rgb(0 0 0 / 0.48);
-  --border-color: #000000;
-  --panel: #000000;
-  --panel-ink: #f5f5f5;
-  --hairline: rgb(0 0 0 / 0.55);
+  /* ---- Radius scale — soft, not brutalist, not bubbly ---- */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+  --radius: var(--r-md);
 
-  --background: var(--bg);
-  --foreground: var(--text);
-  --card: var(--surface);
-  --card-foreground: var(--text);
-  --popover: var(--surface);
-  --popover-foreground: var(--text);
-  --primary-foreground: var(--bg);
-  --secondary: var(--surface-variant);
-  --secondary-foreground: var(--text);
-  --muted: var(--surface-variant);
-  --muted-foreground: var(--text-muted);
-  --accent: var(--primary);
-  --accent-foreground: var(--bg);
-  --destructive: #000000;
-  --border: var(--border-color);
-  --input: var(--surface-variant);
-  --ring: var(--primary);
+  /* ---- Motion tokens (mirrored in lib/motion.ts) ---- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --dur-fast: 160ms;
+  --dur-base: 280ms;
+  --dur-slow: 620ms;
+
+  /* ---- Spacing rhythm (density 4/10 — standard-to-spacious) ---- */
+  --space-section: clamp(5rem, 9vw, 9rem);
+  --space-block: clamp(2.5rem, 4vw, 4rem);
 }
 
-.dark {
-  --bg: #000000;
-  --surface: #0d0d0d;
-  --surface-variant: #141414;
-  --primary: #f5f5f5;
-  --primary-hover: #ffffff;
-  --primary-soft: rgb(245 245 245 / 0.1);
-  --text: #f5f5f5;
-  --text-secondary: rgb(245 245 245 / 0.72);
-  --text-muted: rgb(245 245 245 / 0.48);
-  --border-color: #f5f5f5;
-  --panel: #f5f5f5;
-  --panel-ink: #000000;
-  --hairline: rgb(245 245 245 / 0.4);
+/* Color palettes — one per branch. See design-system/contrast-manifest.json */
+@import "../design-system/themes/active.css";
 
-  --background: var(--bg);
-  --foreground: var(--text);
-  --card: var(--surface);
-  --card-foreground: var(--text);
-  --popover: var(--surface);
-  --popover-foreground: var(--text);
-  --primary-foreground: var(--bg);
-  --secondary: var(--surface-variant);
-  --secondary-foreground: var(--text);
-  --muted: var(--surface-variant);
-  --muted-foreground: var(--text-muted);
-  --accent: var(--primary);
-  --accent-foreground: var(--bg);
-  --border: var(--border-color);
-  --input: var(--surface-variant);
-  --ring: var(--primary);
-}
+/* ==========================================================================
+   Base
+   ========================================================================== */
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-background text-foreground;
+    background: var(--bg);
+    color: var(--text);
     font-family: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
     overflow-x: hidden;
+    /* Theme swap should feel like a dimmer, not a strobe. */
+    transition:
+      background-color var(--dur-base) var(--ease-out-expo),
+      color var(--dur-base) var(--ease-out-expo);
+  }
+
+  ::selection {
+    background: var(--text);
+    color: var(--bg);
   }
 
   button,
@@ -120,176 +99,373 @@
   a[role="button"] {
     cursor: pointer;
   }
+
+  /* One consistent, high-visibility focus treatment everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: var(--r-xs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
 section[id] {
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 6.5rem;
 }
 
-.text-perforated {
-  -webkit-text-stroke: 1.25px currentColor;
-  color: color-mix(in srgb, currentColor 22%, transparent);
-}
+/* ==========================================================================
+   Layout primitives
+   ========================================================================== */
 
-.matrix-numeral {
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.08em;
-  line-height: 0.9;
-}
-
-.page-shell {
-  background: var(--bg);
-  color: var(--text);
-}
-
-.section-inner {
+.shell {
   width: 100%;
-  max-width: 72rem;
+  max-width: 78rem;
   margin-inline: auto;
   padding-inline: 1.25rem;
 }
 
 @media (min-width: 768px) {
-  .section-inner {
+  .shell {
     padding-inline: 2rem;
   }
 }
 
-@media (min-width: 1024px) {
-  .section-inner {
-    padding-inline: 2.5rem;
+@media (min-width: 1280px) {
+  .shell {
+    padding-inline: 3rem;
   }
 }
 
-.rule {
-  border-color: var(--hairline);
-  border-style: dashed;
+.section-y {
+  padding-block: var(--space-section);
 }
 
-.section-eyebrow {
+/* ==========================================================================
+   Material — the "premium" is here: layered gradient + sheen + depth
+   ========================================================================== */
+
+.surface {
+  position: relative;
+  background: var(--card-gradient);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+  box-shadow:
+    var(--card-sheen),
+    var(--elev-1);
+  backdrop-filter: blur(8px);
+}
+
+.surface-lift {
+  box-shadow:
+    var(--card-sheen),
+    var(--elev-2);
+}
+
+.surface-flat {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--r-lg);
+}
+
+/* Film grain — kills banding on the large gradients, adds tactility. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Ambient light behind the hero / section headers. */
+.aura {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+}
+
+/* Hairline rules that read as precision, not wireframe. */
+.hairline-x {
+  border-top: 1px solid var(--hairline);
+}
+
+.hairline-y {
+  border-left: 1px solid var(--hairline);
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   font-family: var(--font-jetbrains), ui-monospace, monospace;
   font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.section-heading {
-  font-family: var(--font-space), sans-serif;
-  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
+.eyebrow::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: var(--hairline-strong);
+}
+
+.display-xl {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-size: clamp(2.75rem, 8.5vw, 6.5rem);
   font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 1.05;
-  text-transform: uppercase;
-  color: var(--text);
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
 
-.section-subtitle {
-  font-size: 0.95rem;
+.display-lg {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-size: clamp(2rem, 4.6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.display-md {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.lede {
+  font-size: clamp(1rem, 1.35vw, 1.1875rem);
   line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.copy {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  text-wrap: pretty;
+}
+
+.mono-label {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   color: var(--text-muted);
-  max-width: 36rem;
 }
 
-.btn-primary {
+.numeral {
+  font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+/* Outlined display text — the one graphic flourish, used once in the hero. */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.25px color-mix(in srgb, var(--text) 42%, transparent);
+  paint-order: stroke fill;
+}
+
+/* ==========================================================================
+   Controls
+   ========================================================================== */
+
+.btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0.75rem 1.25rem;
+  gap: 0.55rem;
+  min-height: 2.875rem;
+  padding: 0.8rem 1.4rem;
+  border-radius: 9999px;
   font-family: var(--font-jetbrains), ui-monospace, monospace;
   font-size: 0.6875rem;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  background: var(--text);
+  white-space: nowrap;
+  border: 1px solid transparent;
+  overflow: hidden;
+  transform: translateY(0) scale(1);
+  background-repeat: no-repeat;
+  transition:
+    background-position var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo),
+    border-color var(--dur-base) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-expo),
+    transform var(--dur-base) var(--ease-out-expo);
+}
+
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 38%,
+    color-mix(in srgb, currentColor 24%, transparent) 50%,
+    transparent 62%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.65s var(--ease-out-expo);
+  pointer-events: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn:hover::after {
+  transform: translateX(130%);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: var(--dur-fast);
+}
+
+.btn svg {
+  flex-shrink: 0;
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-expo);
+}
+
+.btn:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.btn-solid {
   color: var(--bg);
-  transition: background-color 0.15s ease, color 0.15s ease, outline-color 0.15s ease;
+  background-color: var(--text);
+  background-image: linear-gradient(
+    120deg,
+    var(--text) 0%,
+    var(--text) 42%,
+    var(--accent) 58%,
+    color-mix(in srgb, var(--accent) 75%, var(--text)) 100%
+  );
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  box-shadow: var(--elev-1);
 }
 
-.btn-primary:hover {
-  background: transparent;
+.btn-solid:hover {
+  background-position: 100% 50%;
+  color: var(--accent-ink);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow:
+    var(--elev-2),
+    0 0 24px -6px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.btn-ghost {
+  border-color: var(--hairline-strong);
   color: var(--text);
-  outline: 1px dashed var(--text);
+  background-color: transparent;
+  background-image: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 42%,
+    var(--accent-soft) 58%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 100%
+  );
+  background-size: 220% 100%;
+  background-position: 0% 50%;
 }
 
-.btn-secondary {
+.btn-ghost:hover {
+  background-position: 100% 50%;
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  box-shadow: 0 0 20px -8px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.chip {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0.75rem 1.25rem;
-  font-family: var(--font-jetbrains), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  border: 1px dashed var(--hairline);
-  color: var(--text);
-  background: transparent;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--text);
-  color: var(--bg);
-}
-
-.tag-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.3rem 0.55rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--text) 3.5%, transparent);
   font-family: var(--font-jetbrains), ui-monospace, monospace;
   font-size: 0.625rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  border: 1px dashed var(--hairline);
   color: var(--text-secondary);
+  white-space: nowrap;
+  transition:
+    border-color var(--dur-fast) var(--ease-out-expo),
+    color var(--dur-fast) var(--ease-out-expo);
 }
 
-.panel-window {
-  border: 1px dashed var(--hairline);
-  background: var(--panel);
-  color: var(--panel-ink);
+.chip:hover {
+  border-color: var(--hairline-strong);
+  color: var(--text);
 }
 
-.panel-titlebar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.25rem;
-  border-bottom: 1px dashed color-mix(in srgb, var(--panel-ink) 30%, transparent);
-}
-
-@keyframes arch-dot {
-  0% {
-    top: 0;
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  85% {
-    opacity: 1;
-  }
-  100% {
-    top: calc(100% - 4px);
-    opacity: 0;
-  }
-}
-
-.arch-dot {
+/* Cursor-tracked spotlight; driven by --mx/--my set in SpotlightCard.tsx. */
+.spotlight::before {
+  content: "";
   position: absolute;
-  width: 4px;
-  height: 4px;
-  background: var(--text);
-  left: 50%;
-  transform: translateX(-50%);
-  animation: arch-dot 2s ease-in-out infinite;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out-expo);
+  background: radial-gradient(
+    22rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in srgb, var(--text) 10%, transparent),
+    transparent 65%
+  );
+}
+
+.spotlight:hover::before,
+.spotlight:focus-within::before {
+  opacity: 1;
+}
+
+/* Marquee track (Framer Motion drives the transform; this only masks edges). */
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }

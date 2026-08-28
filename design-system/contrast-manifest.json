@@ -1,0 +1,140 @@
+{
+  "checker": "https://colourcontrast.cc/",
+  "wcagTarget": "AA normal text (4.5:1)",
+  "themes": [
+    {
+      "id": "blue",
+      "name": "Ocean Blue",
+      "branch": "theme/blue",
+      "light": {
+        "bg": "#fafaf9",
+        "surface": "#ffffff",
+        "text": "#08080a",
+        "accent": "#1d4ed8",
+        "accentInk": "#ffffff"
+      },
+      "dark": {
+        "bg": "#050506",
+        "surface": "#0c0c0e",
+        "text": "#f7f7f5",
+        "accent": "#7ca6ff",
+        "accentInk": "#06121f"
+      }
+    },
+    {
+      "id": "gold",
+      "name": "Warm Gold",
+      "branch": "theme/gold",
+      "reference": "#222222 on #ffe66d = 12.72:1 (colourcontrast.cc)",
+      "light": {
+        "bg": "#faf8f2",
+        "surface": "#fffef8",
+        "text": "#222222",
+        "accent": "#8a6b00",
+        "accentInk": "#ffffff"
+      },
+      "dark": {
+        "bg": "#0a0a08",
+        "surface": "#121210",
+        "text": "#f5f3ea",
+        "accent": "#ffe66d",
+        "accentInk": "#222222"
+      }
+    },
+    {
+      "id": "forest",
+      "name": "Forest Green",
+      "branch": "theme/forest",
+      "light": {
+        "bg": "#f7faf8",
+        "surface": "#ffffff",
+        "text": "#0a1a12",
+        "accent": "#047857",
+        "accentInk": "#ffffff"
+      },
+      "dark": {
+        "bg": "#040a07",
+        "surface": "#0b1410",
+        "text": "#ecfdf5",
+        "accent": "#34d399",
+        "accentInk": "#052e1f"
+      }
+    },
+    {
+      "id": "coral",
+      "name": "Coral Ember",
+      "branch": "theme/coral",
+      "light": {
+        "bg": "#faf8f7",
+        "surface": "#ffffff",
+        "text": "#1a0a08",
+        "accent": "#c2410c",
+        "accentInk": "#ffffff"
+      },
+      "dark": {
+        "bg": "#0a0605",
+        "surface": "#140c0a",
+        "text": "#fff5f2",
+        "accent": "#ff8a7a",
+        "accentInk": "#2a0a06"
+      }
+    },
+    {
+      "id": "violet",
+      "name": "Soft Violet",
+      "branch": "theme/violet",
+      "light": {
+        "bg": "#f9f8fc",
+        "surface": "#ffffff",
+        "text": "#120a1f",
+        "accent": "#6d28d9",
+        "accentInk": "#ffffff"
+      },
+      "dark": {
+        "bg": "#07050c",
+        "surface": "#100d18",
+        "text": "#f5f0ff",
+        "accent": "#a78bfa",
+        "accentInk": "#1a0a2e"
+      }
+    },
+    {
+      "id": "teal",
+      "name": "Deep Teal",
+      "branch": "theme/teal",
+      "light": {
+        "bg": "#f6fbfb",
+        "surface": "#ffffff",
+        "text": "#082120",
+        "accent": "#0f766e",
+        "accentInk": "#ffffff"
+      },
+      "dark": {
+        "bg": "#040c0b",
+        "surface": "#0a1413",
+        "text": "#ecfeff",
+        "accent": "#2dd4bf",
+        "accentInk": "#042f2e"
+      }
+    },
+    {
+      "id": "rose",
+      "name": "Rose Quartz",
+      "branch": "theme/rose",
+      "light": {
+        "bg": "#faf7f8",
+        "surface": "#ffffff",
+        "text": "#1a0810",
+        "accent": "#be123c",
+        "accentInk": "#ffffff"
+      },
+      "dark": {
+        "bg": "#0a0507",
+        "surface": "#140a0e",
+        "text": "#fff1f4",
+        "accent": "#fb7185",
+        "accentInk": "#2a0610"
+      }
+    }
+  ]
+}
