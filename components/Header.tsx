@@ -2,9 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
+import { Sun, Moon, Menu, X, ArrowUpRight } from "lucide-react";
 import { BrandMark } from "@/components/BrandMark";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { DURATION, EASE_OUT, EASE_IN_OUT, SPRING, stagger } from "@/lib/motion";
+import { profile } from "@/data/profile";
 
 interface NavLink {
   label: string;
@@ -23,11 +33,22 @@ function hrefToSection(href: string): string | null {
   return href.split("#")[1] ?? null;
 }
 
+const menuItem = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT } },
+};
+
 export function Header({ title, navLinks }: HeaderProps) {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState("home");
   const [isDark, setIsDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 16);
+  });
 
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains("dark"));
@@ -44,12 +65,28 @@ export function Header({ title, navLinks }: HeaderProps) {
     };
   }, [menuOpen]);
 
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  }
+  // Escape closes the menu — every overlay needs a keyboard escape route.
+  useEffect(() => {
+    if (!menuOpen) return;
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") setMenuOpen(false);
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDark((prev) => {
+      const next = !prev;
+      document.documentElement.classList.toggle("dark", next);
+      try {
+        localStorage.setItem("theme", next ? "dark" : "light");
+      } catch {
+        /* private mode — the class swap still applies for this session */
+      }
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     if (pathname !== "/") return;
@@ -77,83 +114,192 @@ export function Header({ title, navLinks }: HeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-dashed border-[var(--hairline)] bg-[color-mix(in_srgb,var(--bg)_94%,transparent)] backdrop-blur-md">
-      <div className="section-inner flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
-        <Link
-          href="/#home"
-          className="flex min-w-0 shrink-0 items-center gap-3.5 text-[var(--text)]"
-          onClick={() => setMenuOpen(false)}
-        >
-          <BrandMark className="h-12 w-12 shrink-0 md:h-14 md:w-14" />
-          <span className="hidden truncate font-display text-lg font-bold tracking-[-0.04em] uppercase sm:block md:text-xl">
-            {title}
-          </span>
-        </Link>
+    <>
+      <motion.header
+        initial={{ y: -24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: DURATION.slow, ease: EASE_OUT, delay: 0.1 }}
+        className="sticky top-0 z-50"
+      >
+        {/* Material layer: invisible at rest, frosts in once the page moves. */}
+        <motion.div
+          aria-hidden
+          className="absolute inset-0 border-b backdrop-blur-xl"
+          animate={{
+            opacity: scrolled ? 1 : 0,
+            backdropFilter: scrolled ? "blur(20px)" : "blur(0px)",
+          }}
+          transition={{ duration: DURATION.base, ease: EASE_OUT }}
+          style={{
+            background: "color-mix(in srgb, var(--bg) 72%, transparent)",
+            borderColor: "var(--hairline)",
+          }}
+        />
 
-        <nav className="hidden items-center gap-6 lg:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`relative py-2 font-mono text-[11px] font-semibold tracking-[0.16em] uppercase transition-colors ${
-                isActive(link.href)
-                  ? "text-[var(--text)]"
-                  : "text-[var(--text-muted)] hover:text-[var(--text)]"
-              }`}
-            >
-              {link.label}
-              {isActive(link.href) ? (
-                <span className="absolute inset-x-0 -bottom-0.5 h-px bg-[var(--text)]" />
-              ) : null}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            className="flex h-10 w-10 items-center justify-center border border-dashed border-[var(--hairline)] text-[var(--text-muted)] transition-colors hover:bg-[var(--text)] hover:text-[var(--bg)]"
-          >
-            {isDark ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-          <button
-            type="button"
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            className="flex h-10 w-10 items-center justify-center border border-dashed border-[var(--hairline)] lg:hidden"
-          >
-            {menuOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-        </div>
-      </div>
-
-      {menuOpen ? (
-        <>
-          <button
-            type="button"
-            aria-label="Close menu"
-            className="fixed inset-0 top-[4.5rem] z-40 bg-black/55 lg:hidden"
+        <div className="shell relative flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
+          <Link
+            href="/#home"
+            className="group flex min-w-0 shrink-0 items-center gap-3 text-[var(--text)]"
             onClick={() => setMenuOpen(false)}
-          />
-          <nav className="absolute inset-x-0 top-full z-50 border-b border-dashed border-[var(--hairline)] bg-[var(--bg)] px-5 py-2 lg:hidden">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`block border-b border-dashed border-[var(--hairline)] py-3.5 font-mono text-[12px] font-semibold tracking-[0.16em] uppercase last:border-b-0 ${
-                  isActive(link.href) ? "text-[var(--text)]" : "text-[var(--text-muted)]"
-                }`}
-                onClick={() => setMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+          >
+            <motion.span
+              whileHover={{ rotate: 90 }}
+              transition={SPRING}
+              className="inline-flex"
+            >
+              <BrandMark className="h-12 w-12 md:h-14 md:w-14" />
+            </motion.span>
+            <span className="hidden truncate font-display text-base font-bold tracking-[-0.04em] uppercase sm:block md:text-lg">
+              {title}
+            </span>
+          </Link>
+
+          {/* Desktop nav — one shared-layout pill slides to the active section. */}
+          <nav className="hidden lg:block">
+            <ul className="flex items-center gap-1 rounded-full border border-[var(--hairline)] bg-[color-mix(in_srgb,var(--text)_4%,transparent)] p-1">
+              {navLinks.map((link) => {
+                const active = isActive(link.href);
+                return (
+                  <li key={link.href} className="relative">
+                    <Link
+                      href={link.href}
+                      aria-current={active ? "page" : undefined}
+                      className="relative block rounded-full px-3.5 py-2 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase transition-colors duration-200"
+                      style={{ color: active ? "var(--bg)" : "var(--text-muted)" }}
+                    >
+                      {active ? (
+                        <motion.span
+                          layoutId="nav-pill"
+                          className="absolute inset-0 rounded-full bg-[var(--text)]"
+                          transition={SPRING}
+                        />
+                      ) : null}
+                      <span className="relative z-10">{link.label}</span>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
-        </>
-      ) : null}
-    </header>
+
+          <div className="flex shrink-0 items-center gap-2">
+            <motion.button
+              type="button"
+              onClick={toggleTheme}
+              whileTap={{ scale: 0.9 }}
+              transition={SPRING}
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+              className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[var(--hairline)] text-[var(--text-secondary)] transition-colors hover:border-[var(--hairline-strong)] hover:text-[var(--text)]"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={isDark ? "sun" : "moon"}
+                  initial={{ y: 14, opacity: 0, rotate: -45 }}
+                  animate={{ y: 0, opacity: 1, rotate: 0 }}
+                  exit={{ y: -14, opacity: 0, rotate: 45 }}
+                  transition={{ duration: DURATION.base, ease: EASE_OUT }}
+                  className="absolute inline-flex"
+                >
+                  {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                </motion.span>
+              </AnimatePresence>
+            </motion.button>
+
+            <Magnetic className="hidden lg:inline-flex">
+              <Link href="/#contact" className="btn btn-solid">
+                Get in touch
+                <ArrowUpRight size={14} aria-hidden />
+              </Link>
+            </Magnetic>
+
+            <motion.button
+              type="button"
+              onClick={() => setMenuOpen((open) => !open)}
+              whileTap={{ scale: 0.9 }}
+              transition={SPRING}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[var(--hairline)] text-[var(--text)] lg:hidden"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={menuOpen ? "close" : "open"}
+                  initial={{ opacity: 0, rotate: -90 }}
+                  animate={{ opacity: 1, rotate: 0 }}
+                  exit={{ opacity: 0, rotate: 90 }}
+                  transition={{ duration: DURATION.fast, ease: EASE_OUT }}
+                  className="absolute inline-flex"
+                >
+                  {menuOpen ? <X size={18} /> : <Menu size={18} />}
+                </motion.span>
+              </AnimatePresence>
+            </motion.button>
+          </div>
+        </div>
+
+        <ScrollProgress />
+      </motion.header>
+
+      {/* Mobile overlay menu */}
+      <AnimatePresence>
+        {menuOpen ? (
+          <motion.div
+            id="mobile-menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: DURATION.base, ease: EASE_IN_OUT }}
+            className="fixed inset-0 z-40 lg:hidden"
+          >
+            <div
+              className="absolute inset-0 backdrop-blur-2xl"
+              style={{ background: "color-mix(in srgb, var(--bg) 92%, transparent)" }}
+            />
+
+            <motion.nav
+              variants={stagger(0.05, 0.12)}
+              initial="hidden"
+              animate="show"
+              className="relative flex h-full flex-col justify-center gap-1 px-7 pb-24"
+            >
+              {navLinks.map((link, i) => (
+                <motion.div key={link.href} variants={menuItem}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    aria-current={isActive(link.href) ? "page" : undefined}
+                    className="flex items-baseline gap-4 border-b border-[var(--hairline)] py-4"
+                  >
+                    <span className="mono-label w-6 shrink-0">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      className="display-lg"
+                      style={{
+                        color: isActive(link.href)
+                          ? "var(--text)"
+                          : "var(--text-muted)",
+                      }}
+                    >
+                      {link.label}
+                    </span>
+                  </Link>
+                </motion.div>
+              ))}
+
+              <motion.a
+                variants={menuItem}
+                href={profile.contact.email.href}
+                className="mono-label mt-8 inline-flex items-center gap-2 text-[var(--text-secondary)]"
+              >
+                {profile.contact.email.label}
+                <ArrowUpRight size={13} aria-hidden />
+              </motion.a>
+            </motion.nav>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </>
   );
 }

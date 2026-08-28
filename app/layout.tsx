@@ -1,23 +1,28 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { MotionProvider } from "@/components/motion/MotionProvider";
+import { ThemeStyles } from "@/components/ThemeStyles";
+import { getPortfolioContent } from "@/lib/content/server";
 import "./globals.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space",
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  display: "swap",
 });
 
 const hankenGrotesk = Hanken_Grotesk({
   variable: "--font-hanken",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -28,24 +33,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon-48.png",
-        type: "image/png",
-        sizes: "48x48",
-      },
-      {
-        url: "/favicon-192.png",
-        type: "image/png",
-        sizes: "192x192",
-      },
-      {
-        url: "/logo-dark.png",
-        type: "image/png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/logo-light.png",
-        type: "image/png",
-        media: "(prefers-color-scheme: light)",
+        url: "/logo.svg",
+        type: "image/svg+xml",
       },
     ],
   },
@@ -57,9 +46,9 @@ export const metadata: Metadata = {
     siteName: "Noirly Portfolio",
     images: [
       {
-        url: "/logo-dark.png",
-        width: 2048,
-        height: 2048,
+        url: "/logo.svg",
+        width: 384,
+        height: 396,
         alt: "Noirly Portfolio",
       },
     ],
@@ -70,7 +59,7 @@ export const metadata: Metadata = {
     title: "Noirly Portfolio · Aneesh Pissay",
     description:
       "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
-    images: ["/logo-dark.png"],
+    images: ["/logo.svg"],
   },
 };
 
@@ -95,25 +84,28 @@ const jsonLd = {
       "@type": "Person",
       name: "Aneesh Pissay",
       url: "https://www.aneesh-pissay.in/",
-      image: "https://www.aneesh-pissay.in/favicon-192.png",
+      image: "https://www.aneesh-pissay.in/logo.svg",
     },
     {
       "@type": "Organization",
       name: "Noirly Portfolio",
       url: "https://www.aneesh-pissay.in/",
-      logo: "https://www.aneesh-pissay.in/favicon-192.png",
+      logo: "https://www.aneesh-pissay.in/logo.svg",
     },
   ],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const content = await getPortfolioContent();
+
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning data-theme={content.theme.id}>
       <head>
+        <ThemeStyles themeId={content.theme.id} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -131,11 +123,29 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${spaceGrotesk.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable} flex min-h-dvh flex-col antialiased`}
+        className={`${fraunces.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable} flex min-h-dvh flex-col antialiased`}
       >
-        <Header title="Noirly Portfolio" navLinks={navLinks} />
-        {children}
-        <Footer title="Noirly Portfolio" />
+        {/*
+          Framer Motion serialises each element's `initial` state into the SSR
+          HTML (e.g. style="opacity:0"), so with JavaScript disabled the page
+          would render blank. Neutralise those inline states for no-JS readers
+          and crawlers that don't execute scripts.
+        */}
+        <noscript>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `[style*="opacity:0"],[style*="translateY(110%)"],[style*="scale(0)"],[style*="scaleX(0)"],[style*="scaleY(0)"]{opacity:1!important;filter:none!important;transform:none!important}`,
+            }}
+          />
+        </noscript>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <MotionProvider>
+          <Header title="Noirly Portfolio" navLinks={navLinks} />
+          {children}
+          <Footer title="Noirly Portfolio" />
+        </MotionProvider>
       </body>
     </html>
   );

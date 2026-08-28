@@ -1,52 +1,67 @@
+import { cn } from "@/lib/utils";
+
 type BrandMarkProps = {
   className?: string;
   title?: string;
+  /** Tighter crop for nav/icons — omits the outer hex ring for legibility at small sizes */
+  variant?: "full" | "compact";
 };
 
-/** Transparent Noirly mark — inherits text color for light/dark contrast. */
-export function BrandMark({ className = "", title }: BrandMarkProps) {
+const VIEWBOX = {
+  full: "0 0 384 396",
+  compact: "74 61 236 273",
+} as const;
+
+const INFINITY_MARK =
+  "M222.25 174.273C235.636 174.273 246.5 184.962 246.5 198.432C246.5 211.72 235.635 222.544 222.25 222.544C215.736 222.544 209.675 220.03 205.094 215.493L205.084 215.483L205.073 215.474L197.639 208.896C196.385 207.787 195.41 206.923 194.557 206.342C193.691 205.753 192.897 205.417 192 205.417C191.103 205.418 190.31 205.755 189.445 206.345C188.592 206.927 187.618 207.792 186.366 208.902L178.697 215.703L178.687 215.714L178.676 215.724C174.327 220.073 168.222 222.59 161.75 222.59C148.367 222.59 137.5 211.721 137.5 198.432C137.5 185.142 148.367 174.273 161.75 174.273C168.218 174.273 174.324 176.788 178.904 181.369L178.916 181.38L178.927 181.39L186.361 187.968C187.615 189.077 188.59 189.941 189.443 190.522C190.309 191.11 191.103 191.447 192 191.446C192.897 191.446 193.69 191.108 194.555 190.519C195.408 189.937 196.382 189.072 197.634 187.962L205.303 181.16L205.313 181.15L205.324 181.14C209.673 176.791 215.778 174.274 222.25 174.273ZM161.75 182.44C152.907 182.44 145.667 189.581 145.667 198.432C145.667 207.283 152.907 214.424 161.75 214.424C166.042 214.424 170.056 212.775 173.081 209.761L178.683 204.803C180.25 203.415 181.466 202.34 182.283 201.383C183.11 200.415 183.587 199.503 183.587 198.433C183.586 197.363 183.109 196.45 182.281 195.483C181.463 194.527 180.246 193.453 178.677 192.067L173.265 187.286C170.06 184.092 166.047 182.44 161.75 182.44ZM222.25 182.44C217.951 182.44 213.93 184.094 210.903 187.117L205.317 192.062C203.75 193.449 202.534 194.524 201.717 195.481C200.89 196.448 200.413 197.361 200.413 198.431C200.414 199.501 200.891 200.413 201.719 201.38C202.537 202.336 203.754 203.41 205.323 204.796L210.72 209.564C213.927 212.768 217.993 214.424 222.25 214.424C231.093 214.424 238.333 207.283 238.333 198.432C238.333 189.581 231.093 182.44 222.25 182.44Z";
+
+/** Transparent Noirly mark — inherits text color for theme and light/dark contrast. */
+export function BrandMark({ className, title, variant = "compact" }: BrandMarkProps) {
   return (
     <svg
-      viewBox="0 0 512 512"
+      viewBox={VIEWBOX[variant]}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={cn("h-full w-full shrink-0", className)}
       aria-hidden={title ? undefined : true}
       role={title ? "img" : undefined}
     >
       {title ? <title>{title}</title> : null}
+      {variant === "full" ? (
+        <path
+          d="M192 5.7735L358.277 101.773V293.773L192 389.773L25.7231 293.773V101.773L192 5.7735Z"
+          stroke="currentColor"
+          strokeWidth="10"
+        />
+      ) : null}
       <path
-        d="M256 64L422.277 160V352L256 448L89.7231 352V160L256 64Z"
-        stroke="currentColor"
-        strokeWidth="10"
-      />
-      <path
-        d="M256 120L373.779 188V324L256 392L138.221 324V188L256 120Z"
+        d="M192 61.7735L309.779 129.773V265.773L192 333.773L74.2205 265.773V129.773L192 61.7735Z"
         stroke="currentColor"
         strokeWidth="4"
         strokeDasharray="10 6"
       />
       <path
-        d="M256 168L332.21 212V300L256 344L179.79 300V212L256 168Z"
+        d="M192 109.773L268.21 153.773V241.773L192 285.773L115.79 241.773V153.773L192 109.773Z"
         stroke="currentColor"
         strokeWidth="3"
       />
-      <path opacity="0.6" d="M256 167V124" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M178.094 210.839L142 190" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M333.953 210.919L370.047 190.081" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M334 301L370.396 322.013" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M178.047 301.081L141.953 321.919" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M256 346L256 388" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M136.211 325L97 347.638" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M256 440V395" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M376 325L415.959 348.071" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M375.894 186.819L415.105 164.181" stroke="currentColor" strokeWidth="2" />
-      <path opacity="0.6" d="M256 117V72" stroke="currentColor" strokeWidth="2" />
-      <path
-        d="M286.25 232C299.908 232 311 242.908 311 256.658C311 270.225 299.908 281.271 286.25 281.271C279.604 281.271 273.417 278.704 268.742 274.075L261.308 267.497C258.781 265.261 257.518 264.143 256.001 264.144C254.484 264.145 253.222 265.264 250.698 267.503L243.029 274.304C238.583 278.75 232.35 281.317 225.75 281.317C212.092 281.317 201 270.225 201 256.658C201 243.092 212.092 232 225.75 232C232.35 232 238.583 234.567 243.258 239.242L250.692 245.82C253.219 248.056 254.482 249.174 255.999 249.173C257.516 249.172 258.778 248.053 261.302 245.814L268.971 239.012C273.417 234.567 279.65 232 286.25 232ZM236.75 267.612L242.351 262.654C245.509 259.859 247.088 258.462 247.087 256.659C247.086 254.857 245.506 253.461 242.345 250.669L236.933 245.887C233.817 242.771 229.921 241.167 225.75 241.167C217.179 241.167 210.167 248.087 210.167 256.658C210.167 265.229 217.179 272.15 225.75 272.15C229.921 272.15 233.817 270.546 236.75 267.612ZM275.25 245.704L269.649 250.662C266.491 253.457 264.912 254.855 264.913 256.657C264.914 258.46 266.494 259.856 269.655 262.648L275.067 267.429C278.183 270.546 282.125 272.15 286.25 272.15C294.821 272.15 301.833 265.229 301.833 256.658C301.833 248.087 294.821 241.167 286.25 241.167C282.079 241.167 278.183 242.771 275.25 245.704Z"
-        fill="currentColor"
-      />
-      <path opacity="0.6" d="M136.211 186.638L97 164" stroke="currentColor" strokeWidth="2" />
+      {variant === "full" ? (
+        <>
+          <path opacity="0.6" d="M192 108.773V65.7735" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M114.094 152.612L78 131.773" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M269.953 152.693L306.047 131.854" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M270 242.773L306.396 263.787" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M114.047 242.854L77.9532 263.693" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M192 287.773L192 329.773" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M72.211 266.773L33 289.412" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M192 381.773V336.773" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M312 266.774L351.959 289.844" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M311.895 128.593L351.105 105.954" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M192 58.7735V13.7735" stroke="currentColor" strokeWidth="2" />
+          <path opacity="0.6" d="M72.211 128.412L33 105.773" stroke="currentColor" strokeWidth="2" />
+        </>
+      ) : null}
+      <path d={INFINITY_MARK} fill="currentColor" stroke="currentColor" />
     </svg>
   );
 }

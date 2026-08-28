@@ -1,5 +1,12 @@
+"use client";
+
 import Link from "next/link";
+import { ArrowUp, ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { BrandMark } from "@/components/BrandMark";
+import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { fadeUp, SPRING } from "@/lib/motion";
 import { profile } from "@/data/profile";
 
 interface FooterProps {
@@ -15,82 +22,95 @@ const footerLinks = [
   { label: "Contact", href: "/#contact" },
 ];
 
+const connectLinks = [
+  { label: profile.contact.email.label, href: profile.contact.email.href, external: false },
+  { label: "LinkedIn", href: profile.contact.linkedin.href, external: true },
+  { label: "GitHub", href: profile.contact.github.href, external: true },
+];
+
 export function Footer({ title }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-dashed border-[var(--hairline)]">
-      <div className="section-inner py-12 md:py-14">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-8">
-          <div className="md:col-span-5">
+    <footer className="relative border-t border-[var(--hairline)]">
+      <div className="shell py-16 md:py-20">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
+          <Reveal variants={fadeUp} className="md:col-span-5">
             <div className="flex items-center gap-4 text-[var(--text)]">
-              <BrandMark className="h-14 w-14 shrink-0 md:h-16 md:w-16" />
-              <p className="font-display text-xl font-bold tracking-[-0.04em] uppercase md:text-2xl">
-                {title}
-              </p>
+              <motion.span whileHover={{ rotate: 90 }} transition={SPRING} className="inline-flex">
+                <BrandMark className="h-14 w-14 md:h-16 md:w-16" />
+              </motion.span>
+              <p className="display-md">{title}</p>
             </div>
-            <p className="mt-2 text-sm text-[var(--text-secondary)]">
-              {profile.name} · {profile.role}
+            <p className="mono-label mt-4">
+              {profile.name} — {profile.role}
             </p>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-[var(--text-muted)]">
-              Personal portfolio for selected work across web, mobile, and the
-              Noirly product family.
+            <p className="copy mt-4 max-w-sm">
+              Personal portfolio for selected work across web, mobile, and the Noirly
+              product family.
             </p>
-          </div>
+          </Reveal>
 
           <div className="md:col-span-3">
-            <p className="font-mono text-[10px] font-semibold tracking-[0.16em] uppercase text-[var(--text-muted)]">
-              On this page
-            </p>
-            <div className="mt-3 flex flex-col gap-2">
+            <p className="mono-label">On this page</p>
+            <StaggerGroup gap={0.04} as="ul" className="mt-4 flex flex-col gap-2.5">
               {footerLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
-                >
-                  {link.label}
-                </Link>
+                <RevealItem key={link.href} as="li">
+                  <Link
+                    href={link.href}
+                    className="group inline-flex min-h-[28px] items-center gap-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
+                  >
+                    {link.label}
+                    <ArrowUpRight
+                      size={13}
+                      aria-hidden
+                      className="opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100"
+                    />
+                  </Link>
+                </RevealItem>
               ))}
-            </div>
+            </StaggerGroup>
           </div>
 
           <div className="md:col-span-4">
-            <p className="font-mono text-[10px] font-semibold tracking-[0.16em] uppercase text-[var(--text-muted)]">
-              Connect
-            </p>
-            <div className="mt-3 flex flex-col gap-2">
-              <a
-                href={profile.contact.email.href}
-                className="text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
-              >
-                {profile.contact.email.label}
-              </a>
-              <a
-                href={profile.contact.linkedin.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
-              >
-                LinkedIn
-              </a>
-              <a
-                href={profile.contact.github.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
-              >
-                GitHub
-              </a>
-            </div>
+            <p className="mono-label">Connect</p>
+            <StaggerGroup gap={0.04} as="ul" className="mt-4 flex flex-col gap-2.5">
+              {connectLinks.map((link) => (
+                <RevealItem key={link.href} as="li">
+                  <a
+                    href={link.href}
+                    {...(link.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                    className="group inline-flex min-h-[28px] items-center gap-1.5 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text)]"
+                  >
+                    {link.label}
+                    <ArrowUpRight
+                      size={13}
+                      aria-hidden
+                      className="opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100"
+                    />
+                  </a>
+                </RevealItem>
+              ))}
+            </StaggerGroup>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-dashed border-[var(--hairline)] pt-6 font-mono text-[10px] tracking-[0.16em] uppercase text-[var(--text-muted)]">
+        <div className="mono-label mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-[var(--hairline)] pt-7">
           <span>
             © {currentYear} {profile.name}
           </span>
-          <span>Noirly design system</span>
+
+          <Magnetic>
+            <Link
+              href="/#home"
+              className="inline-flex items-center gap-2 rounded-full border border-[var(--hairline)] px-4 py-2 transition-colors hover:border-[var(--hairline-strong)] hover:text-[var(--text)]"
+            >
+              Back to top
+              <ArrowUp size={13} aria-hidden />
+            </Link>
+          </Magnetic>
         </div>
       </div>
     </footer>
