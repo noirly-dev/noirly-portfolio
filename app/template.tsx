@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { DURATION, EASE_OUT } from "@/lib/motion";
 
+import { useInstantEntrance } from "@/hooks/useCoarsePointer";
+
 /**
  * Route enter transition.
  *
@@ -11,11 +13,20 @@ import { DURATION, EASE_OUT } from "@/lib/motion";
  * only — no blur or scale here, because this wrapper contains the whole page
  * and filtering it would cost a full-page repaint on every route change.
  *
- * Renders as <main> so every route gets the landmark (and the skip link's
- * target) exactly once, and so `main::before` — the cursor spotlight in
- * styles/cursor.css — has something to hang off on every page, not just home.
+ * On mobile / touch, the wrapper is static so Lighthouse sees content on first
+ * paint instead of waiting for hydration to clear `opacity: 0`.
  */
 export default function Template({ children }: { children: React.ReactNode }) {
+  const instant = useInstantEntrance();
+
+  if (instant) {
+    return (
+      <main id="main" className="flex flex-1 flex-col">
+        {children}
+      </main>
+    );
+  }
+
   return (
     <motion.main
       id="main"

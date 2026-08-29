@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
@@ -46,6 +46,12 @@ const navLinks = [
   { label: "Work", href: "/#work" },
   { label: "Contact", href: "/#contact" },
 ];
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getPortfolioContent();
@@ -112,6 +118,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description: profile.description,
       images: ["/favicon-light-192.png"],
     },
+    manifest: "/manifest.webmanifest",
   };
 }
 
@@ -155,6 +162,12 @@ export default async function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning data-theme={content.theme.id}>
       <head>
         <ThemeStyles themeId={content.theme.id} nonce={nonce} />
+        <style
+          nonce={nonce}
+          dangerouslySetInnerHTML={{
+            __html: `@media(max-width:767px),(pointer:coarse){[style*="opacity:0"],[style*="opacity: 0"]{opacity:1!important}[style*="translateY(110%)"],[style*="translateY(8px)"],[style*="translateY(-24px)"]{transform:none!important}[style*="blur(8px)"]{filter:none!important}}`,
+          }}
+        />
         <script
           type="application/ld+json"
           nonce={nonce}

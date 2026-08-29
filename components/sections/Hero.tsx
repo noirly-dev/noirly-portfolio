@@ -52,8 +52,8 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
       */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <HeroCanvas />
-        <div className="aura -top-40 left-[-10%] h-[32rem] w-[32rem]" />
-        <div className="aura right-[-15%] top-20 h-[26rem] w-[26rem]" />
+        <div className="aura hero-aura -top-40 left-[-10%] h-[32rem] w-[32rem]" />
+        <div className="aura hero-aura right-[-15%] top-20 h-[26rem] w-[26rem]" />
       </div>
 
       <motion.div
@@ -62,14 +62,15 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
       >
         {/* Masthead — the headline gets the full measure, so it sets on two
             lines instead of being squeezed into a column and towering. */}
-        <Reveal variants={fadeUp}>
+        <Reveal variants={fadeUp} priority>
           <p className="eyebrow">{profile.badge}</p>
         </Reveal>
 
-        <h1 className="display-xl mt-6 max-w-[24ch]">
+        <h1 className="hero-headline display-xl mt-6 max-w-[24ch]">
           <TextReveal
             text={profile.title}
             delay={0.08}
+            priority
             className="display-xl block text-[var(--text)]"
           />
           {/* The two lines are separate block elements; without this the
@@ -78,6 +79,7 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
             text={profile.titleAccent}
             delay={0.18}
             outline
+            priority
             className="display-xl block"
           />
         </h1>
@@ -86,7 +88,7 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
             against a taller neighbour, so there is no dead space to fill. */}
         <div className="mt-10 grid items-start gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)] lg:gap-14">
           <div className="flex flex-col">
-            <Reveal variants={fadeUp} delay={0.3}>
+            <Reveal variants={fadeUp} delay={0.3} priority>
               <p className="lede">{profile.description}</p>
             </Reveal>
 

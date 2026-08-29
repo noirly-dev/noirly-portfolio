@@ -46,7 +46,7 @@ export function Counter({
   }, [inView, reduced, value, suffix, duration]);
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref} className={className} style={{ display: "inline-block", minWidth: "2.5ch" }}>
       {value}
       {suffix}
     </span>

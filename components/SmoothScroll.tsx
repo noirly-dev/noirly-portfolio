@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { ReactLenis } from "lenis/react";
 import { lenisOptions, useLenisFrameSync, useScrollMode } from "@/hooks/useLenis";
+import { useCoarsePointer } from "@/hooks/useCoarsePointer";
 import "lenis/dist/lenis.css";
 
 /**
@@ -24,6 +25,12 @@ function FrameSync(): null {
 
 export function SmoothScroll({ children }: { children: ReactNode }) {
   const mode = useScrollMode();
+  const coarse = useCoarsePointer();
+
+  // Native scroll on touch — Lenis adds JS weight with no benefit on coarse pointers.
+  if (coarse) {
+    return <>{children}</>;
+  }
 
   return (
     <ReactLenis root options={lenisOptions(mode)}>

@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import { fadeUp, stagger, VIEWPORT } from "@/lib/motion";
+import { useInstantEntrance } from "@/hooks/useCoarsePointer";
 
 /**
  * `motion` is a proxy, so `motion[tag]` resolves fine at runtime. Widening
@@ -41,6 +42,8 @@ interface RevealProps extends React.PropsWithChildren {
   delay?: number;
   as?: Tag;
   id?: string;
+  /** Above-the-fold: show immediately on mobile / touch. */
+  priority?: boolean;
 }
 
 /** Scroll-triggered entrance. Fires once, slightly before it reaches the fold. */
@@ -51,17 +54,22 @@ export function Reveal({
   delay = 0,
   as = "div",
   id,
+  priority = false,
 }: RevealProps) {
+  const instant = useInstantEntrance();
   const Comp = motionTag(as);
+  const runInstant = priority || instant;
 
   return (
     <Comp
       id={id}
       className={className}
       variants={variants}
-      initial="hidden"
-      whileInView="show"
-      viewport={VIEWPORT}
+      initial={runInstant ? "show" : "hidden"}
+      {...(runInstant
+        ? {}
+        : { whileInView: "show", viewport: VIEWPORT })}
+      animate={runInstant ? "show" : undefined}
       transition={delay ? { delay } : undefined}
     >
       {children}

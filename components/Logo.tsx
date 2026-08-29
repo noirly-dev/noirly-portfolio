@@ -16,7 +16,14 @@ export function Logo({ className, title, variant = "default" }: LogoProps) {
       aria-label={title}
       aria-hidden={title ? undefined : true}
     >
-      <img src="/logo.svg" alt="" className="logo-mark-img" decoding="async" />
+      <img
+        src="/logo.svg"
+        alt=""
+        width={64}
+        height={64}
+        className="logo-mark-img"
+        decoding="async"
+      />
     </span>
   );
 }

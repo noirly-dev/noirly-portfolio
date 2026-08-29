@@ -3,6 +3,7 @@
 import { useRef, type ReactNode } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { useCoarsePointer } from "@/hooks/useCoarsePointer";
 
 /**
  * Perspective tilt for a card-shaped child.
@@ -40,6 +41,8 @@ interface TiltCardProps {
 export function TiltCard({ children, className, cursor = "hover" }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+  const coarse = useCoarsePointer();
+  const enabled = !coarse && !reduced;
 
   const targetX = useMotionValue(0);
   const targetY = useMotionValue(0);
@@ -47,23 +50,17 @@ export function TiltCard({ children, className, cursor = "hover" }: TiltCardProp
   const rotateY = useSpring(targetY, SPRING);
 
   function handleMove(event: React.MouseEvent<HTMLDivElement>): void {
-    if (reduced) return;
+    if (!enabled) return;
     const el = ref.current;
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
-    // 0..1 across the card, then re-centred to -0.5..0.5.
     const px = (event.clientX - rect.left) / rect.width;
     const py = (event.clientY - rect.top) / rect.height;
 
     targetY.set((px - 0.5) * 2 * MAX_TILT);
-    // Negated: pointer below centre should push the near edge toward the
-    // viewer, which is a negative rotateX.
     targetX.set(-(py - 0.5) * 2 * MAX_TILT);
 
-    // Specular highlight. Custom properties inherit, so setting them here on
-    // the wrapper positions the gradient on `.tilt-card::before` — and the
-    // wrapper's untilted box keeps the highlight in step with the pointer.
     el.style.setProperty("--tilt-x", `${(px * 100).toFixed(2)}%`);
     el.style.setProperty("--tilt-y", `${(py * 100).toFixed(2)}%`);
   }
@@ -71,6 +68,10 @@ export function TiltCard({ children, className, cursor = "hover" }: TiltCardProp
   function handleLeave(): void {
     targetX.set(0);
     targetY.set(0);
+  }
+
+  if (!enabled) {
+    return <div className={className}>{children}</div>;
   }
 
   return (

@@ -62,16 +62,23 @@ export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) 
   if (variant === "menu") {
     return (
       <div className="mt-8 border-t border-[var(--hairline)] pt-6">
-        <p className="mono-label">Color palette</p>
-        <ul className="mt-4 grid grid-cols-2 gap-2">
+        <p className="mono-label" id={`${listId}-label`}>
+          Color palette
+        </p>
+        <ul
+          role="radiogroup"
+          aria-labelledby={`${listId}-label`}
+          className="mt-4 grid grid-cols-2 gap-2"
+        >
           {themes.map((theme) => {
             const selected = theme.id === paletteId;
             return (
               <li key={theme.id}>
                 <button
                   type="button"
+                  role="radio"
+                  aria-checked={selected}
                   onClick={() => selectTheme(theme.id)}
-                  aria-pressed={selected}
                   className={cn(
                     "flex w-full items-center gap-2.5 rounded-[var(--r-md)] border px-3 py-2.5 text-left text-sm transition-colors",
                     selected
@@ -101,7 +108,7 @@ export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) 
         aria-label="Choose color palette"
         aria-expanded={open}
         aria-controls={listId}
-        aria-haspopup="listbox"
+        aria-haspopup="true"
         className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[var(--hairline)] text-[var(--text-secondary)] transition-colors hover:border-[var(--hairline-strong)] hover:text-[var(--text)]"
       >
         <Palette size={16} aria-hidden />
@@ -116,28 +123,30 @@ export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) 
         {open ? (
           <motion.div
             id={listId}
-            role="listbox"
+            role="dialog"
             aria-label="Color palettes"
-            aria-activedescendant={`${listId}-${paletteId}`}
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: DURATION.base, ease: EASE_OUT }}
             className="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-[var(--r-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-2 shadow-[var(--elev-2)]"
           >
-            <p className="mono-label px-2 py-1.5">
+            <p className="mono-label px-2 py-1.5" id={`${listId}-label`}>
               {activeTheme ? activeTheme.name : "Palette"}
             </p>
-            <ul className="max-h-[min(24rem,60vh)] overflow-y-auto">
+            <ul
+              role="radiogroup"
+              aria-labelledby={`${listId}-label`}
+              className="max-h-[min(24rem,60vh)] overflow-y-auto"
+            >
               {themes.map((theme) => {
                 const selected = theme.id === paletteId;
                 return (
-                  <li key={theme.id} role="presentation">
+                  <li key={theme.id}>
                     <button
                       type="button"
-                      role="option"
-                      id={`${listId}-${theme.id}`}
-                      aria-selected={selected}
+                      role="radio"
+                      aria-checked={selected}
                       onClick={() => selectTheme(theme.id)}
                       className={cn(
                         "flex w-full items-center gap-3 rounded-[var(--r-md)] px-2.5 py-2 text-left text-sm transition-colors",

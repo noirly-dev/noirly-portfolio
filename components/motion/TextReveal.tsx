@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { maskUp, stagger, VIEWPORT } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { useInstantEntrance } from "@/hooks/useCoarsePointer";
 
 interface TextRevealProps {
   /** Plain text. Split on whitespace, each word masked and lifted in turn. */
@@ -14,6 +15,8 @@ interface TextRevealProps {
   as?: "h1" | "h2" | "h3" | "p" | "span";
   /** Renders the words as outline-only — used once, for the hero counter-line. */
   outline?: boolean;
+  /** Above-the-fold hero copy: animate on mount, not on scroll (mobile LCP). */
+  priority?: boolean;
 }
 
 /**
@@ -33,17 +36,22 @@ export function TextReveal({
   delay = 0,
   as: Tag = "span",
   outline = false,
+  priority = false,
 }: TextRevealProps) {
+  const instant = useInstantEntrance();
   const words = text.split(" ").filter(Boolean);
+  const runInstant = priority || instant;
 
   return (
     <Tag className={className}>
       <motion.span
         className="inline"
         variants={stagger(gap, delay)}
-        initial="hidden"
-        whileInView="show"
-        viewport={VIEWPORT}
+        initial={runInstant ? "show" : "hidden"}
+        {...(runInstant
+          ? {}
+          : { whileInView: "show", viewport: VIEWPORT })}
+        animate={runInstant ? "show" : undefined}
       >
         {words.map((word, i) => (
           <span key={`${word}-${i}`}>

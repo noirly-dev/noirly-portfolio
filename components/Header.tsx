@@ -15,6 +15,7 @@ import { ThemePicker } from "@/components/ThemePicker";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { DURATION, EASE_OUT, EASE_IN_OUT, SPRING, stagger } from "@/lib/motion";
+import { useInstantEntrance } from "@/hooks/useCoarsePointer";
 import type { Profile } from "@/data/profile";
 
 interface NavLink {
@@ -43,6 +44,7 @@ const menuItem = {
 export function Header({ title, navLinks, profile }: HeaderProps) {
   const brandName = title.replace(/\s*portfolio\s*/gi, "").trim();
   const pathname = usePathname();
+  const instantEntrance = useInstantEntrance();
   const [activeSection, setActiveSection] = useState("home");
   const [isDark, setIsDark] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -119,9 +121,9 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
   return (
     <>
       <motion.header
-        initial={{ y: -24, opacity: 0 }}
+        initial={instantEntrance ? false : { y: -24, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: DURATION.slow, ease: EASE_OUT, delay: 0.1 }}
+        transition={{ duration: DURATION.slow, ease: EASE_OUT, delay: instantEntrance ? 0 : 0.1 }}
         className="sticky top-0 z-50"
       >
         {/* Material layer: invisible at rest, frosts in once the page moves. */}
@@ -264,7 +266,7 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
               variants={stagger(0.05, 0.12)}
               initial="hidden"
               animate="show"
-              className="relative flex h-full flex-col justify-center gap-1 px-7 pb-24"
+              className="relative flex h-full max-h-[100dvh] flex-col justify-center gap-1 overflow-y-auto overscroll-contain px-5 pb-[max(6rem,env(safe-area-inset-bottom))] pt-[max(5rem,env(safe-area-inset-top))] sm:px-7"
             >
               {navLinks.map((link, i) => (
                 <motion.div key={link.href} variants={menuItem}>
