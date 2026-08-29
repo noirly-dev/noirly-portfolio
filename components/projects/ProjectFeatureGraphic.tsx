@@ -29,36 +29,66 @@ function isCanvasFill(value: string | null | undefined): boolean {
   return value != null && CANVAS_FILL.test(value.trim());
 }
 
-function isBlackFill(value: string | null | undefined): boolean {
-  return value != null && /^(?:#000000?|black|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\)|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*1\s*\))$/i.test(value.trim());
-}
-
-function isBlackFilled(el: Element): boolean {
-  const fill = el.getAttribute("fill");
-  const styleFill = el.getAttribute("style")?.match(/fill:\s*([^;]+)/i)?.[1]?.trim();
-  return isBlackFill(fill) || isBlackFill(styleFill);
-}
-
 function isCanvasFilled(el: Element): boolean {
   const fill = el.getAttribute("fill");
   const styleFill = el.getAttribute("style")?.match(/fill:\s*([^;]+)/i)?.[1]?.trim();
   return isCanvasFill(fill) || isCanvasFill(styleFill);
 }
 
-function isBackgroundRect(el: Element): boolean {
+function isBackgroundRect(el: Element, svgEl: Element): boolean {
   if (el.tagName.toLowerCase() !== "rect") return false;
+  if (el.parentElement !== svgEl) return false;
+
+  const width = el.getAttribute("width") ?? "";
+  const height = el.getAttribute("height") ?? "";
+  const w = Number.parseFloat(width);
+  const h = Number.parseFloat(height);
+
+  if (width === "100%" || height === "100%") return true;
+
+  const viewBox = svgEl.getAttribute("viewBox")?.trim().split(/\s+/).map(Number);
+  if (viewBox && viewBox.length >= 4) {
+    const vbW = viewBox[2] ?? 0;
+    const vbH = viewBox[3] ?? 0;
+    if (w >= vbW * 0.9 && h >= vbH * 0.9) return true;
+  }
+
+  const svgW = Number.parseFloat(svgEl.getAttribute("width") ?? "");
+  const svgH = Number.parseFloat(svgEl.getAttribute("height") ?? "");
+  if (!Number.isNaN(svgW) && !Number.isNaN(svgH) && w >= svgW * 0.9 && h >= svgH * 0.9) {
+    return true;
+  }
 
   const fill = el.getAttribute("fill");
   const styleFill = el.getAttribute("style")?.match(/fill:\s*([^;]+)/i)?.[1]?.trim();
   if (!isCanvasFill(fill) && !isCanvasFill(styleFill)) return false;
 
-  const width = el.getAttribute("width") ?? "";
-  const height = el.getAttribute("height") ?? "";
-  return (
-    width === "100%" ||
-    height === "100%" ||
-    (Number.parseFloat(width) >= 64 && Number.parseFloat(height) >= 64)
-  );
+  return w >= 64 && h >= 64;
+}
+
+function themeGroupElement(group: Element): void {
+  group.removeAttribute("class");
+  group.removeAttribute("style");
+
+  const stroke = group.getAttribute("stroke");
+  const fill = group.getAttribute("fill");
+
+  if (stroke && !isExplicitNone(stroke)) {
+    group.setAttribute("stroke", ACCENT);
+  }
+
+  if (fill && !isExplicitNone(fill)) {
+    group.setAttribute("fill", ACCENT);
+  } else {
+    group.setAttribute("fill", "none");
+  }
+}
+
+function parentGroupHasStroke(el: Element): boolean {
+  const parent = el.parentElement;
+  if (!parent || parent.tagName.toLowerCase() !== "g") return false;
+  const stroke = parent.getAttribute("stroke");
+  return stroke != null && !isExplicitNone(stroke);
 }
 
 function isExplicitNone(value: string | null | undefined): boolean {
@@ -73,16 +103,18 @@ function themeShapeElement(el: Element): void {
 
   const fill = el.getAttribute("fill");
   const stroke = el.getAttribute("stroke");
-  const hasStroke = stroke != null && !isExplicitNone(stroke);
-  const fillIsNone = isExplicitNone(fill);
+  const hasOwnStroke = stroke != null && !isExplicitNone(stroke);
+  const inheritsStroke = parentGroupHasStroke(el);
 
-  if (fillIsNone || (hasStroke && fill == null)) {
+  if (fill && !isExplicitNone(fill)) {
+    el.setAttribute("fill", ACCENT);
+  } else if (isExplicitNone(fill) || inheritsStroke || hasOwnStroke) {
     el.setAttribute("fill", "none");
   } else {
     el.setAttribute("fill", ACCENT);
   }
 
-  if (hasStroke) {
+  if (hasOwnStroke) {
     el.setAttribute("stroke", ACCENT);
   }
 }
@@ -96,7 +128,7 @@ function themeSvgMarkup(raw: string): string {
   svgEl.querySelectorAll("style").forEach((style) => style.remove());
 
   svgEl.querySelectorAll("rect").forEach((rect) => {
-    if (isBackgroundRect(rect)) rect.remove();
+    if (isBackgroundRect(rect, svgEl)) rect.remove();
   });
 
   svgEl.querySelectorAll("path").forEach((path) => {
@@ -105,17 +137,7 @@ function themeSvgMarkup(raw: string): string {
     if (path.parentElement === svgEl || d.length > 100) path.remove();
   });
 
-  const firstShape = svgEl.querySelector(":scope > rect, :scope > path, :scope > g");
-  if (firstShape && (isBlackFilled(firstShape) || isCanvasFilled(firstShape))) {
-    firstShape.remove();
-  }
-
-  svgEl.querySelectorAll("g").forEach((group) => {
-    group.removeAttribute("class");
-    group.removeAttribute("style");
-    group.removeAttribute("fill");
-    group.removeAttribute("stroke");
-  });
+  svgEl.querySelectorAll("g").forEach(themeGroupElement);
 
   svgEl
     .querySelectorAll("path,circle,ellipse,polygon,polyline,rect,line")
