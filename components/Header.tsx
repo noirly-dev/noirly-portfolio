@@ -144,17 +144,21 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
         <div className="shell relative flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
           <Link
             href="/#home"
+            aria-label={`${brandName} home`}
             className="group flex min-w-0 shrink-0 items-center gap-2.5 text-[var(--text)]"
             onClick={() => setMenuOpen(false)}
           >
-            <span className="inline-flex size-[4.25rem] shrink-0 sm:hidden">
+            {/* Logo-only on small screens — brand name is visually hidden until sm. */}
+            <span className="inline-flex size-[4.25rem] shrink-0 sm:hidden" aria-hidden>
               <Logo variant="nav" className="size-full" />
             </span>
             <span className="hidden items-center gap-3 font-display text-xl font-bold leading-none tracking-[-0.04em] uppercase sm:flex md:text-2xl lg:text-3xl">
-              <span className="inline-flex size-14 shrink-0 md:size-16">
+              <span className="inline-flex size-14 shrink-0 md:size-16" aria-hidden>
                 <Logo variant="nav" className="size-full" />
               </span>
-              <span className="truncate">{brandName}</span>
+              <span className="truncate" aria-hidden>
+                {brandName}
+              </span>
             </span>
           </Link>
 
