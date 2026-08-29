@@ -166,7 +166,7 @@ export function About({ profile = defaultProfile }: { profile?: Profile }) {
 
   return (
     <section id="about" className="section-rule relative">
-      <div className="shell section-y grid gap-12 lg:grid-cols-2 lg:gap-16">
+      <div className="shell section-y grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <SectionHeading index="01" eyebrow="About" title={profile.aboutTitle} />
 

@@ -37,7 +37,7 @@ export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) 
 
   useEffect(() => {
     if (!open) return;
-    function onPointerDown(event: MouseEvent) {
+    function onPointerDown(event: PointerEvent) {
       if (!rootRef.current?.contains(event.target as Node)) {
         setOpen(false);
       }
@@ -45,10 +45,10 @@ export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") setOpen(false);
     }
-    window.addEventListener("mousedown", onPointerDown);
+    window.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("keydown", onKeyDown);
     return () => {
-      window.removeEventListener("mousedown", onPointerDown);
+      window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
@@ -129,7 +129,12 @@ export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.98 }}
             transition={{ duration: DURATION.base, ease: EASE_OUT }}
-            className="absolute right-0 top-[calc(100%+0.5rem)] z-50 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-[var(--r-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-2 shadow-[var(--elev-2)]"
+            // Below sm the palette button is not the rightmost control in the
+            // header, so anchoring the panel's right edge to it pushed a 288px
+            // panel off the left of a 375px screen. On phones it is pinned to
+            // the viewport instead; from sm up there is room to hang it off the
+            // button as before.
+            className="fixed inset-x-4 top-20 z-50 w-auto overflow-hidden rounded-[var(--r-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-2 shadow-[var(--elev-2)] sm:absolute sm:inset-x-auto sm:right-0 sm:top-[calc(100%+0.5rem)] sm:w-[min(18rem,calc(100vw-2rem))]"
           >
             <p className="mono-label px-2 py-1.5" id={`${listId}-label`}>
               {activeTheme ? activeTheme.name : "Palette"}

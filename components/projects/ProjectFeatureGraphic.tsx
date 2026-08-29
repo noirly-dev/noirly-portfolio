@@ -15,6 +15,11 @@ function initials(title: string): string {
   return (parts[0]?.slice(0, 2) ?? "N").toUpperCase();
 }
 
+function isSvgLogo(src: string): boolean {
+  const path = src.split("?")[0]?.split("#")[0] ?? "";
+  return path.toLowerCase().endsWith(".svg");
+}
+
 export function ProjectFeatureGraphic({
   title,
   type,
@@ -110,6 +115,36 @@ export function ProjectLogo({
   }, []);
 
   if (logo && !failed) {
+    if (isSvgLogo(logo)) {
+      return (
+        <span
+          className={cn(
+            "project-logo-mark project-logo-mark--svg",
+            className,
+          )}
+        >
+          {/* Hidden probe — mask rendering has no onError, so detect 404s the same way as <img>. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            ref={catchAlreadyFailed}
+            src={logo}
+            alt=""
+            onError={() => setFailed(true)}
+            className="sr-only"
+            aria-hidden
+          />
+          <span
+            className="project-logo-mark-svg"
+            style={{
+              WebkitMaskImage: `url("${logo}")`,
+              maskImage: `url("${logo}")`,
+            }}
+            aria-hidden
+          />
+        </span>
+      );
+    }
+
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img

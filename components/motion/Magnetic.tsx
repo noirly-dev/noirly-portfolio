@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { SPRING_SOFT } from "@/lib/motion";
 import { useCachedRect } from "@/hooks/useCachedRect";
+import { cn } from "@/lib/utils";
 
 interface MagneticProps extends React.PropsWithChildren {
   className?: string;
@@ -45,8 +46,14 @@ export function Magnetic({ children, className, strength = 14 }: MagneticProps) 
   return (
     <motion.span
       ref={ref}
-      className={className}
-      style={{ x: sx, y: sy, display: "inline-flex" }}
+      // `inline-flex` belongs in the class list, not in `style`. As an inline
+      // style it outranked every stylesheet rule, so a caller passing a
+      // responsive display utility — `hidden lg:inline-flex` on the header CTA
+      // — was silently ignored and the element rendered at every width. Through
+      // `cn` (tailwind-merge) the caller's display utility wins the conflict,
+      // while the span still gets a transformable box by default.
+      className={cn("inline-flex", className)}
+      style={{ x: sx, y: sy }}
       onPointerMove={handleMove}
       onPointerLeave={reset}
       onPointerCancel={reset}

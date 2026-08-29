@@ -102,7 +102,7 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
 
         {/* Both columns hang from the same top line — nothing is centred
             against a taller neighbour, so there is no dead space to fill. */}
-        <div className="mt-10 grid items-start gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)] lg:gap-14">
+        <div className="mt-10 grid grid-cols-1 items-start gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)] lg:gap-14">
           <div className="flex flex-col">
             <Reveal variants={fadeUp} delay={0.3} priority>
               <p className="lede">{profile.description}</p>
