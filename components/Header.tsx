@@ -269,45 +269,51 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
               variants={stagger(0.05, 0.12)}
               initial="hidden"
               animate="show"
-              className="relative flex h-full max-h-[100dvh] flex-col justify-center gap-1 overflow-y-auto overscroll-contain px-5 pb-[max(6rem,env(safe-area-inset-bottom))] pt-[max(5rem,env(safe-area-inset-top))] sm:px-7"
+              className="relative flex h-full max-h-[100dvh] flex-col overflow-y-auto overscroll-contain px-5 pb-[max(6rem,env(safe-area-inset-bottom))] pt-[max(5rem,env(safe-area-inset-top))] sm:px-7"
             >
-              {navLinks.map((link, i) => (
-                <motion.div key={link.href} variants={menuItem}>
-                  <Link
-                    href={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    aria-current={isActive(link.href) ? "page" : undefined}
-                    className="flex items-baseline gap-4 border-b border-[var(--hairline)] py-4"
-                  >
-                    <span className="mono-label w-6 shrink-0">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      className="display-lg"
-                      style={{
-                        color: isActive(link.href)
-                          ? "var(--text)"
-                          : "var(--text-muted)",
-                      }}
+              {/*
+                Auto margins, not `justify-center`. Centring a scroll container
+                with justify-content splits any overflow above *and* below the
+                content box, and scrollTop cannot go negative — so the top of
+                the list becomes unreachable the moment it stops fitting. Auto
+                margins centre when there is free space and collapse to zero
+                when there is not, which keeps the first link reachable.
+              */}
+              <div className="m-auto flex w-full flex-col gap-1">
+                {navLinks.map((link, i) => (
+                  <motion.div key={link.href} variants={menuItem}>
+                    <Link
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      aria-current={isActive(link.href) ? "page" : undefined}
+                      className="flex items-baseline gap-4 border-b border-[var(--hairline)] py-4"
                     >
-                      {link.label}
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
+                      <span className="mono-label w-6 shrink-0">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span
+                        className="display-lg"
+                        style={{
+                          color: isActive(link.href)
+                            ? "var(--text)"
+                            : "var(--text-muted)",
+                        }}
+                      >
+                        {link.label}
+                      </span>
+                    </Link>
+                  </motion.div>
+                ))}
 
-              <motion.a
-                variants={menuItem}
-                href={profile.contact.email.href}
-                className="mono-label mt-8 inline-flex items-center gap-2 text-[var(--text-secondary)]"
-              >
-                {profile.contact.email.label}
-                <ArrowUpRight size={13} aria-hidden />
-              </motion.a>
-
-              <motion.div variants={menuItem}>
-                <ThemePicker variant="menu" onSelect={() => setMenuOpen(false)} />
-              </motion.div>
+                <motion.a
+                  variants={menuItem}
+                  href={profile.contact.email.href}
+                  className="mono-label mt-8 inline-flex items-center gap-2 text-[var(--text-secondary)]"
+                >
+                  {profile.contact.email.label}
+                  <ArrowUpRight size={13} aria-hidden />
+                </motion.a>
+              </div>
             </motion.nav>
           </motion.div>
         ) : null}

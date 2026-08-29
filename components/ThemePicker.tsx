@@ -23,12 +23,7 @@ function ThemeSwatch({ theme }: { theme: ThemeDefinition }) {
   );
 }
 
-type ThemePickerProps = {
-  variant?: "header" | "menu";
-  onSelect?: () => void;
-};
-
-export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) {
+export function ThemePicker() {
   const { paletteId, setPalette, themes } = useTheme();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -56,46 +51,6 @@ export function ThemePicker({ variant = "header", onSelect }: ThemePickerProps) 
   function selectTheme(id: string) {
     setPalette(id);
     setOpen(false);
-    onSelect?.();
-  }
-
-  if (variant === "menu") {
-    return (
-      <div className="mt-8 border-t border-[var(--hairline)] pt-6">
-        <p className="mono-label" id={`${listId}-label`}>
-          Color palette
-        </p>
-        <ul
-          role="radiogroup"
-          aria-labelledby={`${listId}-label`}
-          className="mt-4 grid grid-cols-2 gap-2"
-        >
-          {themes.map((theme) => {
-            const selected = theme.id === paletteId;
-            return (
-              <li key={theme.id}>
-                <button
-                  type="button"
-                  role="radio"
-                  aria-checked={selected}
-                  onClick={() => selectTheme(theme.id)}
-                  className={cn(
-                    "flex w-full items-center gap-2.5 rounded-[var(--r-md)] border px-3 py-2.5 text-left text-sm transition-colors",
-                    selected
-                      ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--text)]"
-                      : "border-[var(--hairline)] text-[var(--text-secondary)] hover:border-[var(--hairline-strong)] hover:text-[var(--text)]",
-                  )}
-                >
-                  <ThemeSwatch theme={theme} />
-                  <span className="min-w-0 flex-1 truncate font-medium">{theme.name}</span>
-                  {selected ? <Check size={14} className="shrink-0 text-[var(--accent)]" /> : null}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    );
   }
 
   return (
