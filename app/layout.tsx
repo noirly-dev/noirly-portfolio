@@ -32,12 +32,10 @@ const hankenGrotesk = Hanken_Grotesk({
   display: "swap",
 });
 
-/** Mono is used for labels, not LCP text — skip preload to cut render-blocking. */
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
   display: "swap",
-  preload: false,
 });
 
 const navLinks = [

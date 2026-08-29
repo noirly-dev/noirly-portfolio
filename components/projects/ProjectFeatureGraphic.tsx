@@ -116,6 +116,8 @@ export function ProjectLogo({
         ref={catchAlreadyFailed}
         src={logo}
         alt=""
+        width={48}
+        height={48}
         onError={() => setFailed(true)}
         className={cn("h-12 w-12 rounded-[var(--r-md)] border border-[var(--hairline)] object-cover", className)}
       />

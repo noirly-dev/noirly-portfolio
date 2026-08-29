@@ -10,9 +10,12 @@ export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
 
+  // Strict CSP per web.dev: nonce + strict-dynamic. `'unsafe-inline' https:` are
+  // legacy fallbacks ignored by modern browsers once a nonce is present — do NOT
+  // put `'self'` in script-src (Lighthouse treats it as a bypassable allowlist).
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""};
+    script-src 'nonce-${nonce}' 'strict-dynamic' 'unsafe-inline' https:${isDev ? " 'unsafe-eval'" : ""};
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data: https:;
     font-src 'self';
