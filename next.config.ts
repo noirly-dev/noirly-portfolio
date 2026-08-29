@@ -6,6 +6,9 @@ const r2Host = process.env.R2_PUBLIC_URL
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  experimental: {
+    optimizePackageImports: ["lucide-react", "@mdi/js", "@mdi/react"],
+  },
   images: {
     remotePatterns: [
       {

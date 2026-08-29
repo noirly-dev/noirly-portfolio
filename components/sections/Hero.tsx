@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowDown, ArrowUpRight, Check } from "lucide-react";
@@ -10,10 +11,15 @@ import { SpotlightCard } from "@/components/motion/SpotlightCard";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Counter } from "@/components/motion/Counter";
 import { Marquee } from "@/components/motion/Marquee";
-import { HeroCanvas } from "@/components/HeroCanvas";
 import { blurUp, fadeUp, DURATION, EASE_OUT } from "@/lib/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import type { Profile } from "@/data/profile";
+
+/** Canvas + noise worker stay off the critical path; decorative only. */
+const HeroCanvas = dynamic(
+  () => import("@/components/HeroCanvas").then((m) => m.HeroCanvas),
+  { ssr: false },
+);
 
 /** Splits "5+" into 5 and "+" so the number can count up and the suffix can't. */
 function splitStat(value: string): { number: number; suffix: string } | null {

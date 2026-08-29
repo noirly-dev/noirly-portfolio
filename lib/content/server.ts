@@ -77,18 +77,20 @@ function mapCatalogProjects(projects: Array<Record<string, unknown>>): CatalogPr
 }
 
 function contentFetchInit(): RequestInit {
-  const revalidate = Number(process.env.PORTFOLIO_CONTENT_REVALIDATE ?? "0");
+  // Default 5 minutes — on-demand /api/revalidate busts the tag after CMS writes.
+  // Override with PORTFOLIO_CONTENT_REVALIDATE=0 for always-fresh local edits.
+  const revalidate = Number(process.env.PORTFOLIO_CONTENT_REVALIDATE ?? "300");
 
-  if (revalidate > 0) {
-    return {
-      next: {
-        revalidate,
-        tags: ["portfolio-content"],
-      },
-    };
+  if (revalidate <= 0) {
+    return { cache: "no-store" };
   }
 
-  return { cache: "no-store" };
+  return {
+    next: {
+      revalidate,
+      tags: ["portfolio-content"],
+    },
+  };
 }
 
 async function fetchFromApi(): Promise<PortfolioContent> {

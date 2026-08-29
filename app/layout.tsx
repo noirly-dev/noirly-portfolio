@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -7,7 +8,7 @@ import { ThemeStyles } from "@/components/ThemeStyles";
 import { SiteBackground } from "@/components/SiteBackground";
 import { FaviconTheme } from "@/components/FaviconTheme";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { CustomCursor } from "@/components/CustomCursor";
+import { DeferredCursor } from "@/components/DeferredCursor";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { PageTransition } from "@/components/PageTransition";
 import { getPortfolioContent } from "@/lib/content/server";
@@ -16,11 +17,8 @@ import {
   getThemeCssMap,
 } from "@/lib/themes/palette";
 import "./globals.css";
-import "lenis/dist/lenis.css";
 import "@/styles/cursor.css";
 import "@/styles/transitions.css";
-
-export const dynamic = "force-dynamic";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -34,10 +32,12 @@ const hankenGrotesk = Hanken_Grotesk({
   display: "swap",
 });
 
+/** Mono is used for labels, not LCP text — skip preload to cut render-blocking. */
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const navLinks = [
@@ -122,7 +122,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const content = await getPortfolioContent();
+  const [content, headerList] = await Promise.all([
+    getPortfolioContent(),
+    headers(),
+  ]);
+  const nonce = headerList.get("x-nonce") ?? undefined;
   const { profile } = content;
   const themeCssMap = getThemeCssMap();
 
@@ -152,12 +156,14 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning data-theme={content.theme.id}>
       <head>
-        <ThemeStyles themeId={content.theme.id} />
+        <ThemeStyles themeId={content.theme.id} nonce={nonce} />
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <script
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: buildThemeBootScript(content.theme.id, themeCssMap),
           }}
@@ -191,14 +197,11 @@ export default async function RootLayout({
         <SmoothScroll>
           <SiteBackground />
           {/*
-            Renders null on the server and on coarse pointers — <CustomCursor>
-            gates on a `useSyncExternalStore` whose server snapshot is false, so
-            nothing for it reaches the SSR HTML. (`next/dynamic` with
-            `ssr: false` is not permitted inside a Server Component, and both
-            elements are position: fixed, so there is nothing to shift either
-            way.)
+            Deferred via client dynamic import so the cursor hook stays out of
+            the critical JS. Renders null on coarse pointers; fixed positioning
+            means late mount does not shift layout.
           */}
-          <CustomCursor />
+          <DeferredCursor />
           <FaviconTheme />
           <ThemeProvider defaultThemeId={content.theme.id}>
             <MotionProvider>

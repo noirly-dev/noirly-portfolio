@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { ReactLenis } from "lenis/react";
 import { lenisOptions, useLenisFrameSync, useScrollMode } from "@/hooks/useLenis";
+import "lenis/dist/lenis.css";
 
 /**
  * Global smooth-scroll provider.
