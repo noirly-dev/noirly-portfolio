@@ -64,6 +64,10 @@ export function PageTransition({ children }: { children: ReactNode }) {
   const [markVisible, setMarkVisible] = useState(false);
 
   useEffect(() => {
+    void import("@/styles/transitions.css");
+  }, []);
+
+  useEffect(() => {
     // True on first mount, which is what keeps the shutter off-screen on load.
     if (settled === pathname) return;
 

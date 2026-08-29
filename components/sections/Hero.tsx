@@ -8,17 +8,28 @@ import { ArrowDown, ArrowUpRight, Check } from "lucide-react";
 import { TextReveal } from "@/components/motion/TextReveal";
 import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
 import { SpotlightCard } from "@/components/motion/SpotlightCard";
-import { Magnetic } from "@/components/motion/Magnetic";
 import { Counter } from "@/components/motion/Counter";
-import { Marquee } from "@/components/motion/Marquee";
 import { blurUp, fadeUp, DURATION, EASE_OUT } from "@/lib/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import type { Profile } from "@/data/profile";
+import { useInstantEntrance } from "@/hooks/useCoarsePointer";
 
 /** Canvas + noise worker stay off the critical path; decorative only. */
 const HeroCanvas = dynamic(
   () => import("@/components/HeroCanvas").then((m) => m.HeroCanvas),
   { ssr: false },
+);
+
+const Marquee = dynamic(
+  () => import("@/components/motion/Marquee").then((m) => m.Marquee),
+  {
+    ssr: false,
+    loading: () => (
+      <ul className="flex flex-wrap gap-2 px-5">
+        {/* Filled by parent once Marquee mounts — placeholder keeps height. */}
+      </ul>
+    ),
+  },
 );
 
 /** Splits "5+" into 5 and "+" so the number can count up and the suffix can't. */
@@ -30,14 +41,19 @@ function splitStat(value: string): { number: number; suffix: string } | null {
 
 export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
   const ref = useRef<HTMLElement>(null);
+  const instant = useInstantEntrance();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start start", "end start"],
   });
 
-  // Content drifts up and dims as the hero leaves — a shallow, non-jacking parallax.
-  const y = useTransform(scrollYProgress, [0, 1], [0, 90]);
-  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+  // Content drifts up and dims as the hero leaves — skipped on touch/narrow.
+  const y = useTransform(scrollYProgress, [0, 1], instant ? [0, 0] : [0, 90]);
+  const opacity = useTransform(
+    scrollYProgress,
+    [0, 0.8],
+    instant ? [1, 1] : [1, 0],
+  );
 
   const { heroStats, techChips, heroHighlights } = profile;
 
@@ -94,19 +110,15 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
 
             <StaggerGroup gap={0.07} delay={0.38} className="mt-8 flex flex-wrap gap-3">
               <RevealItem>
-                <Magnetic>
-                  <Link href="/#work" className="btn btn-solid" data-cursor="link">
-                    View work
-                    <ArrowUpRight size={14} aria-hidden />
-                  </Link>
-                </Magnetic>
+                <Link href="/#work" className="btn btn-solid" data-cursor="link">
+                  View work
+                  <ArrowUpRight size={14} aria-hidden />
+                </Link>
               </RevealItem>
               <RevealItem>
-                <Magnetic>
-                  <Link href="/#contact" className="btn btn-ghost" data-cursor="link">
-                    {profile.secondaryCta}
-                  </Link>
-                </Magnetic>
+                <Link href="/#contact" className="btn btn-ghost" data-cursor="link">
+                  {profile.secondaryCta}
+                </Link>
               </RevealItem>
             </StaggerGroup>
           </div>

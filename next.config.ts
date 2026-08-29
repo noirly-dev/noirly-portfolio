@@ -21,7 +21,7 @@ const polyfillStub = "./lib/modern-polyfill.js";
 const nextConfig: NextConfig = {
   output: "standalone",
   experimental: {
-    optimizePackageImports: ["lucide-react", "@mdi/js", "@mdi/react"],
+    optimizePackageImports: ["lucide-react", "@mdi/js", "@mdi/react", "framer-motion"],
   },
   turbopack: {
     resolveAlias: {

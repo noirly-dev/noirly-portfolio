@@ -1,22 +1,34 @@
+import dynamic from "next/dynamic";
 import { Hero } from "@/components/sections/Hero";
-import { About } from "@/components/sections/About";
-import { Stack } from "@/components/sections/Stack";
-import { Experience } from "@/components/sections/Experience";
-import { Work } from "@/components/sections/Work";
-import { Contact } from "@/components/sections/Contact";
 import { getPortfolioContent } from "@/lib/content/server";
+import type { BelowTheFoldProps } from "@/components/BelowTheFold";
+
+/**
+ * Below-fold sections share one client chunk (SSR kept for SEO). Hero stays in
+ * the critical path so LCP is not blocked by About/Work motion code.
+ */
+const BelowTheFold = dynamic(
+  () =>
+    import("@/components/BelowTheFold").then((m) => m.BelowTheFold),
+  {
+    loading: () => <div className="min-h-[50vh]" aria-hidden />,
+  },
+);
 
 export default async function Home() {
   const content = await getPortfolioContent();
 
+  const below: BelowTheFoldProps = {
+    profile: content.profile,
+    skillCards: content.skillCards,
+    experience: content.experience,
+    projects: content.projects,
+  };
+
   return (
     <div className="flex-1">
       <Hero profile={content.profile} />
-      <About profile={content.profile} />
-      <Stack skillCards={content.skillCards} profile={content.profile} />
-      <Experience workExperience={content.experience} profile={content.profile} />
-      <Work projects={content.projects} profile={content.profile} />
-      <Contact profile={content.profile} />
+      <BelowTheFold {...below} />
     </div>
   );
 }

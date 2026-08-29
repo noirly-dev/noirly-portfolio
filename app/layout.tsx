@@ -2,13 +2,14 @@ import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { DeferredFooter } from "@/components/DeferredFooter";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ThemeStyles } from "@/components/ThemeStyles";
 import { SiteBackground } from "@/components/SiteBackground";
 import { FaviconTheme } from "@/components/FaviconTheme";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { DeferredCursor } from "@/components/DeferredCursor";
+import { DeferredStyles } from "@/components/DeferredStyles";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { PageTransition } from "@/components/PageTransition";
 import { getPortfolioContent } from "@/lib/content/server";
@@ -17,8 +18,6 @@ import {
   getThemeCssMap,
 } from "@/lib/themes/palette";
 import "./globals.css";
-import "@/styles/cursor.css";
-import "@/styles/transitions.css";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -36,6 +35,7 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const navLinks = [
@@ -213,6 +213,7 @@ export default async function RootLayout({
             means late mount does not shift layout.
           */}
           <DeferredCursor />
+          <DeferredStyles />
           <FaviconTheme />
           <ThemeProvider defaultThemeId={content.theme.id}>
             <MotionProvider>
@@ -222,7 +223,7 @@ export default async function RootLayout({
                 routes, and the shutter is fixed, so it covers them regardless.
               */}
               <PageTransition>{children}</PageTransition>
-              <Footer title="Noirly Portfolio" profile={profile} />
+              <DeferredFooter title="Noirly Portfolio" profile={profile} />
             </MotionProvider>
           </ThemeProvider>
         </SmoothScroll>
