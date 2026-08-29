@@ -73,7 +73,10 @@
   }
 
   html {
-    scroll-behavior: smooth;
+    /* Lenis owns smooth scrolling now (see <SmoothScroll>). Leaving this as
+       `smooth` would put the browser's own animation in a race with Lenis's on
+       every anchor jump, and the two ease differently. */
+    scroll-behavior: auto;
     -webkit-text-size-adjust: 100%;
   }
 
@@ -712,3 +715,4 @@ section[id] {
     transparent
   );
 }
+

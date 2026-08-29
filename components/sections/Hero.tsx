@@ -9,6 +9,7 @@ import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Counter } from "@/components/motion/Counter";
 import { Marquee } from "@/components/motion/Marquee";
+import { HeroCanvas } from "@/components/HeroCanvas";
 import { blurUp, fadeUp, DURATION, EASE_OUT } from "@/lib/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import type { Profile } from "@/data/profile";
@@ -35,8 +36,15 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
 
   return (
     <section id="home" ref={ref} className="relative overflow-hidden">
-      {/* Ambient light. Decorative only. */}
+      {/*
+        Ambient light. Decorative only — never eats a pointer event.
+        This layer is a sibling of the content below, not a parent of it: the
+        canvas paints underneath the headline without the text ever becoming a
+        descendant of a <canvas> wrapper, so nothing above it inherits
+        pointer-events: none or gets pulled into the canvas's stacking context.
+      */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
+        <HeroCanvas />
         <div className="aura -top-40 left-[-10%] h-[32rem] w-[32rem]" />
         <div className="aura right-[-15%] top-20 h-[26rem] w-[26rem]" />
       </div>
@@ -78,7 +86,7 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
             <StaggerGroup gap={0.07} delay={0.38} className="mt-8 flex flex-wrap gap-3">
               <RevealItem>
                 <Magnetic>
-                  <Link href="/#work" className="btn btn-solid">
+                  <Link href="/#work" className="btn btn-solid" data-cursor="link">
                     View work
                     <ArrowUpRight size={14} aria-hidden />
                   </Link>
@@ -86,7 +94,7 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
               </RevealItem>
               <RevealItem>
                 <Magnetic>
-                  <Link href="/#contact" className="btn btn-ghost">
+                  <Link href="/#contact" className="btn btn-ghost" data-cursor="link">
                     {profile.secondaryCta}
                   </Link>
                 </Magnetic>

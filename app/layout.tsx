@@ -7,9 +7,15 @@ import { ThemeStyles } from "@/components/ThemeStyles";
 import { SiteBackground } from "@/components/SiteBackground";
 import { FaviconTheme } from "@/components/FaviconTheme";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { CustomCursor } from "@/components/CustomCursor";
+import { SmoothScroll } from "@/components/SmoothScroll";
+import { PageTransition } from "@/components/PageTransition";
 import { getPortfolioContent } from "@/lib/content/server";
 import { THEME_IDS } from "@/lib/themes/index";
 import "./globals.css";
+import "lenis/dist/lenis.css";
+import "@/styles/cursor.css";
+import "@/styles/transitions.css";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -189,15 +195,36 @@ export default async function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <SiteBackground />
-        <FaviconTheme />
-        <ThemeProvider defaultThemeId={content.theme.id}>
-          <MotionProvider>
-            <Header title="Noirly Portfolio" navLinks={navLinks} profile={profile} />
-            {children}
-            <Footer title="Noirly Portfolio" profile={profile} />
-          </MotionProvider>
-        </ThemeProvider>
+        {/*
+          <SmoothScroll> is outermost of the behavioural providers: it owns the
+          document scroller, and everything below reads scroll position from it
+          (directly, or through Framer Motion's useScroll). It renders no
+          element of its own, so it cannot affect layout.
+        */}
+        <SmoothScroll>
+          <SiteBackground />
+          {/*
+            Renders null on the server and on coarse pointers — <CustomCursor>
+            gates on a `useSyncExternalStore` whose server snapshot is false, so
+            nothing for it reaches the SSR HTML. (`next/dynamic` with
+            `ssr: false` is not permitted inside a Server Component, and both
+            elements are position: fixed, so there is nothing to shift either
+            way.)
+          */}
+          <CustomCursor />
+          <FaviconTheme />
+          <ThemeProvider defaultThemeId={content.theme.id}>
+            <MotionProvider>
+              <Header title="Noirly Portfolio" navLinks={navLinks} profile={profile} />
+              {/*
+                Only {children} is wrapped: the header and footer persist across
+                routes, and the shutter is fixed, so it covers them regardless.
+              */}
+              <PageTransition>{children}</PageTransition>
+              <Footer title="Noirly Portfolio" profile={profile} />
+            </MotionProvider>
+          </ThemeProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

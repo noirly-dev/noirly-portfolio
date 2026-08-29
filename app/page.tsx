@@ -10,13 +10,13 @@ export default async function Home() {
   const content = await getPortfolioContent();
 
   return (
-    <main className="flex-1">
+    <div className="flex-1">
       <Hero profile={content.profile} />
       <About profile={content.profile} />
       <Stack skillCards={content.skillCards} profile={content.profile} />
       <Experience workExperience={content.experience} profile={content.profile} />
       <Work projects={content.projects} profile={content.profile} />
       <Contact profile={content.profile} />
-    </main>
+    </div>
   );
 }

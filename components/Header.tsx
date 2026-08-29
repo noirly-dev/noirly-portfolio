@@ -165,7 +165,7 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
           </Link>
 
           {/* Desktop nav — one shared-layout pill slides to the active section. */}
-          <nav className="hidden lg:block">
+          <nav className="hidden lg:block" data-cursor="link">
             <ul className="flex items-center gap-1 rounded-full border border-[var(--hairline)] bg-[color-mix(in_srgb,var(--text)_4%,transparent)] p-1">
               {navLinks.map((link) => {
                 const active = isActive(link.href);
@@ -217,7 +217,7 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
             </motion.button>
 
             <Magnetic className="hidden lg:inline-flex">
-              <Link href="/#contact" className="btn btn-solid">
+              <Link href="/#contact" className="btn btn-solid" data-cursor="link">
                 Get in touch
                 <ArrowUpRight size={14} aria-hidden />
               </Link>
