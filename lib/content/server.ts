@@ -1,10 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { profile as staticProfile } from "@/data/profile";
-import { featuredProjects as staticProjects } from "@/data/projects";
-import { projects as staticCatalogProjects } from "@/data/projects/index";
-import { workExperience as staticExperience } from "@/data/experience";
-import { skills as staticSkills } from "@/data/skills/index";
-import { skillCards as staticSkillCards, type SkillCard, type SkillIconKey } from "@/data/skills";
+import { type SkillCard, type SkillIconKey } from "@/data/skills";
 import type { Profile } from "@/data/profile";
 import type { FeaturedProject } from "@/data/projects";
 import type { Project as CatalogProject } from "@/data/projects/index";
@@ -31,7 +26,6 @@ export interface PortfolioContent {
   skills: DynamicSkill[];
   skillCards: SkillCard[];
   theme: PortfolioTheme;
-  source: "api" | "static";
 }
 
 const CATEGORY_ICON: Record<string, SkillIconKey> = {
@@ -83,59 +77,49 @@ function mapCatalogProjects(projects: Array<Record<string, unknown>>): CatalogPr
   }));
 }
 
-async function fetchFromApi(): Promise<PortfolioContent | null> {
+async function fetchFromApi(): Promise<PortfolioContent> {
   const base = (
     process.env.PORTFOLIO_CONTENT_API_URL ?? process.env.SITE_CONTENT_API_URL
   )?.replace(/\/$/, "");
-  if (!base) return null;
 
+  if (!base) {
+    throw new Error(
+      "PORTFOLIO_CONTENT_API_URL is required — portfolio content is loaded from the admin API only.",
+    );
+  }
+
+  let res: Response;
   try {
-    const res = await fetch(`${base}/api/public/content`, {
+    res = await fetch(`${base}/api/public/content`, {
       next: { revalidate: 60, tags: ["portfolio-content"] },
     });
-
-    if (!res.ok) return null;
-
-    const data = await res.json();
-    const skills: DynamicSkill[] = data.skills ?? [];
-    const rawProjects = (data.projects as Array<Record<string, unknown>>) ?? [];
-
-    return {
-      profile: data.profile as Profile,
-      projects: mapFeaturedProjects(rawProjects),
-      catalogProjects: mapCatalogProjects(rawProjects),
-      experience: data.experience ?? [],
-      skills,
-      skillCards: toSkillCards(skills),
-      theme: (data.theme as PortfolioTheme) ?? { id: DEFAULT_THEME_ID, name: "Warm Gold" },
-      source: "api",
-    };
-  } catch {
-    return null;
+  } catch (error) {
+    throw new Error("Failed to reach portfolio content API.", { cause: error });
   }
+
+  if (!res.ok) {
+    throw new Error(
+      `Portfolio content API returned ${res.status} ${res.statusText}.`,
+    );
+  }
+
+  const data = await res.json();
+  const skills: DynamicSkill[] = data.skills ?? [];
+  const rawProjects = (data.projects as Array<Record<string, unknown>>) ?? [];
+
+  return {
+    profile: data.profile as Profile,
+    projects: mapFeaturedProjects(rawProjects),
+    catalogProjects: mapCatalogProjects(rawProjects),
+    experience: data.experience ?? [],
+    skills,
+    skillCards: toSkillCards(skills),
+    theme: (data.theme as PortfolioTheme) ?? { id: DEFAULT_THEME_ID, name: "Warm Gold" },
+  };
 }
 
 export const getPortfolioContent = unstable_cache(
-  async (): Promise<PortfolioContent> => {
-    const remote = await fetchFromApi();
-    if (remote) return remote;
-
-    return {
-      profile: staticProfile,
-      projects: staticProjects,
-      catalogProjects: staticCatalogProjects,
-      experience: staticExperience,
-      skills: staticSkills.map((s) => ({
-        label: s.label,
-        category: s.category,
-        color: s.color,
-        iconKey: s.label.toLowerCase().replace(/\s+/g, "-"),
-      })),
-      skillCards: staticSkillCards,
-      theme: { id: DEFAULT_THEME_ID, name: "Warm Gold" },
-      source: "static",
-    };
-  },
+  fetchFromApi,
   ["portfolio-content"],
   { revalidate: 60 },
 );
