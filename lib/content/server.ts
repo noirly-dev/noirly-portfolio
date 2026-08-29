@@ -1,4 +1,3 @@
-import { unstable_cache } from "next/cache";
 import { type SkillCard, type SkillIconKey } from "@/data/skills";
 import type { Profile } from "@/data/profile";
 import type { FeaturedProject } from "@/data/projects";
@@ -77,6 +76,21 @@ function mapCatalogProjects(projects: Array<Record<string, unknown>>): CatalogPr
   }));
 }
 
+function contentFetchInit(): RequestInit {
+  const revalidate = Number(process.env.PORTFOLIO_CONTENT_REVALIDATE ?? "0");
+
+  if (revalidate > 0) {
+    return {
+      next: {
+        revalidate,
+        tags: ["portfolio-content"],
+      },
+    };
+  }
+
+  return { cache: "no-store" };
+}
+
 async function fetchFromApi(): Promise<PortfolioContent> {
   const base = (
     process.env.PORTFOLIO_CONTENT_API_URL ?? process.env.SITE_CONTENT_API_URL
@@ -90,9 +104,7 @@ async function fetchFromApi(): Promise<PortfolioContent> {
 
   let res: Response;
   try {
-    res = await fetch(`${base}/api/public/content`, {
-      next: { revalidate: 60, tags: ["portfolio-content"] },
-    });
+    res = await fetch(`${base}/api/public/content`, contentFetchInit());
   } catch (error) {
     throw new Error("Failed to reach portfolio content API.", { cause: error });
   }
@@ -118,8 +130,6 @@ async function fetchFromApi(): Promise<PortfolioContent> {
   };
 }
 
-export const getPortfolioContent = unstable_cache(
-  fetchFromApi,
-  ["portfolio-content"],
-  { revalidate: 60 },
-);
+export async function getPortfolioContent(): Promise<PortfolioContent> {
+  return fetchFromApi();
+}

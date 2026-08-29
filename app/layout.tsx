@@ -20,6 +20,8 @@ import "lenis/dist/lenis.css";
 import "@/styles/cursor.css";
 import "@/styles/transitions.css";
 
+export const dynamic = "force-dynamic";
+
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
