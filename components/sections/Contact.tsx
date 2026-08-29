@@ -47,7 +47,7 @@ export function Contact({ profile = defaultProfile }: { profile?: Profile }) {
   ];
 
   return (
-    <section id="contact" className="relative overflow-hidden">
+    <section id="contact" className="section-rule relative overflow-hidden">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="aura bottom-[-10rem] left-1/2 h-[30rem] w-[30rem] -translate-x-1/2" />
       </div>
@@ -62,7 +62,7 @@ export function Contact({ profile = defaultProfile }: { profile?: Profile }) {
           className="mx-auto max-w-2xl"
         />
 
-        <StaggerGroup gap={0.09} delay={0.1} className="mt-10 flex justify-center">
+        <StaggerGroup gap={0.09} delay={0.1} className="mt-8 flex justify-center">
           <RevealItem variants={fadeUp}>
             <Magnetic>
               <a href={profile.contact.email.href} className="btn btn-solid">
@@ -76,7 +76,7 @@ export function Contact({ profile = defaultProfile }: { profile?: Profile }) {
         <StaggerGroup
           gap={0.09}
           as="ul"
-          className="mx-auto mt-14 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3"
+          className="mx-auto mt-10 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3"
         >
           {channels.map(({ key, label, value, href, Icon, external }) => (
             <RevealItem key={key} as="li" variants={fadeUp}>

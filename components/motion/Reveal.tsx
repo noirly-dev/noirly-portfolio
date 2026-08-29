@@ -3,15 +3,34 @@
 import { motion, type Variants } from "framer-motion";
 import { fadeUp, stagger, VIEWPORT } from "@/lib/motion";
 
-type Tag = "div" | "section" | "article" | "ul" | "li" | "span" | "p" | "header";
-
 /**
- * `motion` is a proxy, so `motion[tag]` resolves fine at runtime, but its
- * type is a union of component signatures that TS refuses to call. Widening to
- * ElementType keeps the tag prop ergonomic without fighting the union.
+ * `motion` is a proxy, so `motion[tag]` resolves fine at runtime. Widening
+ * the result to `React.ElementType` used to be how the tag prop stayed
+ * ergonomic without fighting framer-motion's per-tag signatures — but
+ * `React.ElementType` resolves through the *global* `JSX.IntrinsicElements`,
+ * and any library that extends that interface with a large, heterogeneous
+ * set of elements (e.g. @react-three/fiber's <mesh>, <group>, ...) makes
+ * TS collapse the union's `children` type to `never` for every consumer,
+ * not just the one importing that library. Keeping an explicit map of the
+ * handful of tags we actually use sidesteps `JSX.IntrinsicElements`
+ * entirely — `Comp` stays a plain union of framer-motion's own component
+ * types, which is immune to what other libraries do to the DOM tag set.
  */
-function motionTag(tag: Tag): React.ElementType {
-  return motion[tag] as React.ElementType;
+const MOTION_TAGS = {
+  div: motion.div,
+  section: motion.section,
+  article: motion.article,
+  ul: motion.ul,
+  li: motion.li,
+  span: motion.span,
+  p: motion.p,
+  header: motion.header,
+} as const;
+
+type Tag = keyof typeof MOTION_TAGS;
+
+function motionTag(tag: Tag) {
+  return MOTION_TAGS[tag];
 }
 
 interface RevealProps extends React.PropsWithChildren {

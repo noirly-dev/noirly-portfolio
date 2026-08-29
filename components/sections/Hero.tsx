@@ -43,129 +43,139 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
 
       <motion.div
         style={{ y, opacity }}
-        className="shell relative grid items-center gap-14 pt-14 pb-20 md:pt-20 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,1fr)] lg:gap-16 lg:pt-24 lg:pb-28"
+        className="shell relative pt-12 pb-16 md:pt-14 lg:pt-16 lg:pb-20"
       >
-        <div className="flex flex-col">
-          <Reveal variants={fadeUp}>
-            <p className="eyebrow">{profile.badge}</p>
+        {/* Masthead — the headline gets the full measure, so it sets on two
+            lines instead of being squeezed into a column and towering. */}
+        <Reveal variants={fadeUp}>
+          <p className="eyebrow">{profile.badge}</p>
+        </Reveal>
+
+        <h1 className="display-xl mt-6 max-w-[24ch]">
+          <TextReveal
+            text={profile.title}
+            delay={0.08}
+            className="display-xl block text-[var(--text)]"
+          />
+          {/* The two lines are separate block elements; without this the
+              accessible name reads "ScalableWeb" as one word. */}{" "}
+          <TextReveal
+            text={profile.titleAccent}
+            delay={0.18}
+            outline
+            className="display-xl block"
+          />
+        </h1>
+
+        {/* Both columns hang from the same top line — nothing is centred
+            against a taller neighbour, so there is no dead space to fill. */}
+        <div className="mt-10 grid items-start gap-10 lg:mt-12 lg:grid-cols-[minmax(0,1fr)_minmax(19rem,24rem)] lg:gap-14">
+          <div className="flex flex-col">
+            <Reveal variants={fadeUp} delay={0.3}>
+              <p className="lede">{profile.description}</p>
+            </Reveal>
+
+            <StaggerGroup gap={0.07} delay={0.38} className="mt-8 flex flex-wrap gap-3">
+              <RevealItem>
+                <Magnetic>
+                  <Link href="/#work" className="btn btn-solid">
+                    View work
+                    <ArrowUpRight size={14} aria-hidden />
+                  </Link>
+                </Magnetic>
+              </RevealItem>
+              <RevealItem>
+                <Magnetic>
+                  <Link href="/#contact" className="btn btn-ghost">
+                    {profile.secondaryCta}
+                  </Link>
+                </Magnetic>
+              </RevealItem>
+            </StaggerGroup>
+          </div>
+
+          {/* Capability panel */}
+          <Reveal variants={blurUp} delay={0.25} className="w-full">
+            <div className="surface grain overflow-hidden">
+              <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-3.5">
+                <span className="mono-label">core_stack</span>
+                <span className="flex items-center gap-2">
+                  <motion.span
+                    className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"
+                    animate={{ opacity: [1, 0.25, 1] }}
+                    transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+                    aria-hidden
+                  />
+                  <span className="mono-label">available</span>
+                </span>
+              </div>
+
+              <StaggerGroup gap={0.08} delay={0.1} as="ul" className="space-y-3 p-5">
+                {heroHighlights.map((item) => (
+                  <RevealItem key={item} as="li" className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[var(--hairline-strong)]">
+                      <Check size={11} aria-hidden />
+                    </span>
+                    <span className="copy">{item}</span>
+                  </RevealItem>
+                ))}
+              </StaggerGroup>
+
+              <div className="border-t border-[var(--hairline)] py-3.5">
+                <Marquee items={techChips} speed={34} />
+              </div>
+            </div>
           </Reveal>
-
-          <h1 className="mt-7 max-w-[15ch]">
-            <TextReveal
-              text={profile.title}
-              delay={0.08}
-              className="display-xl block text-[var(--text)]"
-            />
-            {/* The two lines are separate block elements; without this the
-                accessible name reads "ScalableWeb" as one word. */}{" "}
-            <TextReveal
-              text={profile.titleAccent}
-              delay={0.18}
-              outline
-              className="display-xl block"
-            />
-          </h1>
-
-          <Reveal variants={fadeUp} delay={0.3}>
-            <p className="lede mt-8">{profile.description}</p>
-          </Reveal>
-
-          <StaggerGroup gap={0.07} delay={0.38} className="mt-10 flex flex-wrap gap-3">
-            <RevealItem>
-              <Magnetic>
-                <Link href="/#work" className="btn btn-solid">
-                  View work
-                  <ArrowUpRight size={14} aria-hidden />
-                </Link>
-              </Magnetic>
-            </RevealItem>
-            <RevealItem>
-              <Magnetic>
-                <Link href="/#contact" className="btn btn-ghost">
-                  {profile.secondaryCta}
-                </Link>
-              </Magnetic>
-            </RevealItem>
-          </StaggerGroup>
-
-          <StaggerGroup
-            gap={0.08}
-            delay={0.45}
-            as="ul"
-            className="mt-14 grid grid-cols-3 gap-px overflow-hidden rounded-[var(--r-lg)] border border-[var(--hairline)] bg-[var(--hairline)]"
-          >
-            {heroStats.map((stat) => {
-              const parsed = splitStat(stat.value);
-              return (
-                <RevealItem
-                  key={stat.label}
-                  as="li"
-                  className="bg-[var(--bg)] px-4 py-5 sm:px-5 sm:py-6"
-                >
-                  <p className="numeral text-2xl sm:text-[1.75rem]">
-                    {parsed ? (
-                      <Counter value={parsed.number} suffix={parsed.suffix} />
-                    ) : (
-                      stat.value
-                    )}
-                  </p>
-                  <p className="mono-label mt-2.5 leading-snug">{stat.label}</p>
-                </RevealItem>
-              );
-            })}
-          </StaggerGroup>
         </div>
 
-        {/* Capability panel */}
-        <Reveal variants={blurUp} delay={0.25} className="w-full">
-          <div className="surface grain overflow-hidden">
-            <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-4">
-              <span className="mono-label">core_stack</span>
-              <span className="flex items-center gap-2">
-                <motion.span
-                  className="h-1.5 w-1.5 rounded-full bg-[var(--accent)]"
-                  animate={{ opacity: [1, 0.25, 1] }}
-                  transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-                  aria-hidden
-                />
-                <span className="mono-label">available</span>
-              </span>
-            </div>
-
-            <StaggerGroup gap={0.08} delay={0.1} as="ul" className="space-y-3.5 p-5">
-              {heroHighlights.map((item) => (
-                <RevealItem key={item} as="li" className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[var(--hairline-strong)]">
-                    <Check size={11} aria-hidden />
-                  </span>
-                  <span className="copy">{item}</span>
-                </RevealItem>
-              ))}
-            </StaggerGroup>
-
-            <div className="border-t border-[var(--hairline)] py-4">
-              <Marquee items={techChips} speed={34} />
-            </div>
-          </div>
-        </Reveal>
+        {/* Stats span the full measure — a horizontal rule of fact that closes
+            the hero and squares off the ragged bottom of the two columns. */}
+        <StaggerGroup
+          gap={0.08}
+          delay={0.45}
+          as="ul"
+          className="surface grain mt-12 grid grid-cols-1 overflow-hidden sm:grid-cols-3"
+        >
+          {heroStats.map((stat) => {
+            const parsed = splitStat(stat.value);
+            return (
+              <RevealItem
+                key={stat.label}
+                as="li"
+                className="border-t border-[var(--hairline)] px-5 py-5 first:border-t-0 sm:border-t-0 sm:border-l sm:first:border-l-0 sm:px-6 sm:py-6"
+              >
+                <p className="numeral text-[1.75rem] sm:text-[2rem]">
+                  {parsed ? (
+                    <Counter value={parsed.number} suffix={parsed.suffix} />
+                  ) : (
+                    stat.value
+                  )}
+                </p>
+                <p className="mono-label mt-2.5 leading-snug">{stat.label}</p>
+              </RevealItem>
+            );
+          })}
+        </StaggerGroup>
       </motion.div>
 
-      {/* Scroll cue */}
+      {/* Scroll cue — absolutely placed so it adds no height to the hero. */}
       <motion.div
         aria-hidden
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.1, duration: DURATION.slow, ease: EASE_OUT }}
-        className="shell relative hidden pb-10 lg:block"
+        className="pointer-events-none absolute inset-x-0 bottom-5 hidden lg:block"
       >
-        <motion.span
-          className="mono-label inline-flex items-center gap-2"
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <ArrowDown size={13} />
-          Scroll
-        </motion.span>
+        <div className="shell">
+          <motion.span
+            className="mono-label inline-flex items-center gap-2"
+            animate={{ y: [0, 6, 0] }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <ArrowDown size={13} />
+            Scroll
+          </motion.span>
+        </div>
       </motion.div>
     </section>
   );

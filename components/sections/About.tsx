@@ -164,16 +164,16 @@ export function About({ profile = defaultProfile }: { profile?: Profile }) {
   const glowY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section id="about" className="relative">
-      <div className="shell section-y grid gap-14 lg:grid-cols-2 lg:gap-20">
+    <section id="about" className="section-rule relative">
+      <div className="shell section-y grid gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
           <SectionHeading index="01" eyebrow="About" title={profile.aboutTitle} />
 
           <Reveal variants={fadeUp} delay={0.1}>
-            <p className="copy mt-7 max-w-[52ch] text-base">{profile.aboutBio}</p>
+            <p className="copy mt-5 max-w-[52ch] text-base">{profile.aboutBio}</p>
           </Reveal>
 
-          <StaggerGroup gap={0.08} delay={0.15} as="ul" className="mt-9 space-y-5">
+          <StaggerGroup gap={0.08} delay={0.15} as="ul" className="mt-7 space-y-4">
             {profile.aboutPoints.map((item) => (
               <RevealItem key={item} as="li" className="flex items-start gap-4">
                 <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--hairline-strong)] text-[var(--text-secondary)]">

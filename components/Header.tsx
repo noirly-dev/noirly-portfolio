@@ -10,11 +10,11 @@ import {
   useScroll,
 } from "framer-motion";
 import { Sun, Moon, Menu, X, ArrowUpRight } from "lucide-react";
-import { BrandMark } from "@/components/BrandMark";
+import { Logo } from "@/components/Logo";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { DURATION, EASE_OUT, EASE_IN_OUT, SPRING, stagger } from "@/lib/motion";
-import { profile } from "@/data/profile";
+import type { Profile } from "@/data/profile";
 
 interface NavLink {
   label: string;
@@ -24,6 +24,7 @@ interface NavLink {
 interface HeaderProps {
   title: string;
   navLinks: NavLink[];
+  profile: Profile;
 }
 
 const SECTION_IDS = ["home", "about", "stack", "experience", "work", "contact"];
@@ -38,7 +39,7 @@ const menuItem = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT } },
 };
 
-export function Header({ title, navLinks }: HeaderProps) {
+export function Header({ title, navLinks, profile }: HeaderProps) {
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState("home");
   const [isDark, setIsDark] = useState(true);
@@ -139,18 +140,25 @@ export function Header({ title, navLinks }: HeaderProps) {
         <div className="shell relative flex h-[4.5rem] items-center justify-between gap-4 md:h-20">
           <Link
             href="/#home"
-            className="group flex min-w-0 shrink-0 items-center gap-3 text-[var(--text)]"
+            className="group flex min-w-0 shrink-0 items-center gap-2.5 text-[var(--text)]"
             onClick={() => setMenuOpen(false)}
           >
             <motion.span
               whileHover={{ rotate: 90 }}
               transition={SPRING}
-              className="inline-flex"
+              className="inline-flex size-16 shrink-0 sm:hidden"
             >
-              <BrandMark className="h-12 w-12 md:h-14 md:w-14" />
+              <Logo variant="nav" className="size-full" />
             </motion.span>
-            <span className="hidden truncate font-display text-base font-bold tracking-[-0.04em] uppercase sm:block md:text-lg">
-              {title}
+            <span className="hidden items-center gap-3 font-display text-lg font-bold leading-none tracking-[-0.04em] uppercase sm:flex md:text-xl">
+              <motion.span
+                whileHover={{ rotate: 90 }}
+                transition={SPRING}
+                className="inline-flex size-12 shrink-0 md:size-14"
+              >
+                <Logo variant="nav" className="size-full" />
+              </motion.span>
+              <span className="truncate">{title}</span>
             </span>
           </Link>
 

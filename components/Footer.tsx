@@ -3,14 +3,15 @@
 import Link from "next/link";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { BrandMark } from "@/components/BrandMark";
+import { Logo } from "@/components/Logo";
 import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { fadeUp, SPRING } from "@/lib/motion";
-import { profile } from "@/data/profile";
+import type { Profile } from "@/data/profile";
 
 interface FooterProps {
   title: string;
+  profile: Profile;
 }
 
 const footerLinks = [
@@ -22,14 +23,13 @@ const footerLinks = [
   { label: "Contact", href: "/#contact" },
 ];
 
-const connectLinks = [
-  { label: profile.contact.email.label, href: profile.contact.email.href, external: false },
-  { label: "LinkedIn", href: profile.contact.linkedin.href, external: true },
-  { label: "GitHub", href: profile.contact.github.href, external: true },
-];
-
-export function Footer({ title }: FooterProps) {
+export function Footer({ title, profile }: FooterProps) {
   const currentYear = new Date().getFullYear();
+  const connectLinks = [
+    { label: profile.contact.email.label, href: profile.contact.email.href, external: false },
+    { label: "LinkedIn", href: profile.contact.linkedin.href, external: true },
+    { label: "GitHub", href: profile.contact.github.href, external: true },
+  ];
 
   return (
     <footer className="relative border-t border-[var(--hairline)]">
@@ -37,8 +37,8 @@ export function Footer({ title }: FooterProps) {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           <Reveal variants={fadeUp} className="md:col-span-5">
             <div className="flex items-center gap-4 text-[var(--text)]">
-              <motion.span whileHover={{ rotate: 90 }} transition={SPRING} className="inline-flex">
-                <BrandMark className="h-14 w-14 md:h-16 md:w-16" />
+              <motion.span whileHover={{ rotate: 90 }} transition={SPRING} className="inline-flex size-16 shrink-0 md:size-[4.5rem]">
+                <Logo variant="nav" className="size-full" />
               </motion.span>
               <p className="display-md">{title}</p>
             </div>

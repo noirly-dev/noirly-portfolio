@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ThemeStyles } from "@/components/ThemeStyles";
+import { SiteBackground } from "@/components/SiteBackground";
 import { getPortfolioContent } from "@/lib/content/server";
 import "./globals.css";
 
@@ -25,44 +26,6 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://www.aneesh-pissay.in"),
-  title: "Noirly Portfolio · Aneesh Pissay",
-  description:
-    "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
-  icons: {
-    icon: [
-      {
-        url: "/logo.svg",
-        type: "image/svg+xml",
-      },
-    ],
-  },
-  openGraph: {
-    title: "Noirly Portfolio · Aneesh Pissay",
-    description:
-      "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
-    url: "https://www.aneesh-pissay.in",
-    siteName: "Noirly Portfolio",
-    images: [
-      {
-        url: "/logo.svg",
-        width: 384,
-        height: 396,
-        alt: "Noirly Portfolio",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary",
-    title: "Noirly Portfolio · Aneesh Pissay",
-    description:
-      "Aneesh Pissay — full stack and mobile developer. Personal portfolio in the Noirly product family.",
-    images: ["/logo.svg"],
-  },
-};
-
 const navLinks = [
   { label: "Home", href: "/#home" },
   { label: "About", href: "/#about" },
@@ -72,28 +35,46 @@ const navLinks = [
   { label: "Contact", href: "/#contact" },
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      name: "Noirly Portfolio",
-      url: "https://www.aneesh-pissay.in/",
+export async function generateMetadata(): Promise<Metadata> {
+  const content = await getPortfolioContent();
+  const { profile } = content;
+  const title = `Noirly Portfolio · ${profile.name}`;
+
+  return {
+    metadataBase: new URL("https://www.aneesh-pissay.in"),
+    title,
+    description: profile.description,
+    icons: {
+      icon: [
+        {
+          url: "/logo.svg",
+          type: "image/svg+xml",
+        },
+      ],
     },
-    {
-      "@type": "Person",
-      name: "Aneesh Pissay",
-      url: "https://www.aneesh-pissay.in/",
-      image: "https://www.aneesh-pissay.in/logo.svg",
+    openGraph: {
+      title,
+      description: profile.description,
+      url: "https://www.aneesh-pissay.in",
+      siteName: "Noirly Portfolio",
+      images: [
+        {
+          url: "/logo.svg",
+          width: 384,
+          height: 396,
+          alt: "Noirly Portfolio",
+        },
+      ],
+      type: "website",
     },
-    {
-      "@type": "Organization",
-      name: "Noirly Portfolio",
-      url: "https://www.aneesh-pissay.in/",
-      logo: "https://www.aneesh-pissay.in/logo.svg",
+    twitter: {
+      card: "summary",
+      title,
+      description: profile.description,
+      images: ["/logo.svg"],
     },
-  ],
-};
+  };
+}
 
 export default async function RootLayout({
   children,
@@ -101,6 +82,30 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const content = await getPortfolioContent();
+  const { profile } = content;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: "Noirly Portfolio",
+        url: "https://www.aneesh-pissay.in/",
+      },
+      {
+        "@type": "Person",
+        name: profile.name,
+        url: "https://www.aneesh-pissay.in/",
+        image: "https://www.aneesh-pissay.in/logo.svg",
+      },
+      {
+        "@type": "Organization",
+        name: "Noirly Portfolio",
+        url: "https://www.aneesh-pissay.in/",
+        logo: "https://www.aneesh-pissay.in/logo.svg",
+      },
+    ],
+  };
 
   return (
     <html lang="en" className="dark" suppressHydrationWarning data-theme={content.theme.id}>
@@ -141,10 +146,11 @@ export default async function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
+        <SiteBackground />
         <MotionProvider>
-          <Header title="Noirly Portfolio" navLinks={navLinks} />
+          <Header title="Noirly Portfolio" navLinks={navLinks} profile={profile} />
           {children}
-          <Footer title="Noirly Portfolio" />
+          <Footer title="Noirly Portfolio" profile={profile} />
         </MotionProvider>
       </body>
     </html>

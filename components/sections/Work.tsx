@@ -118,7 +118,7 @@ export function Work({
   profile?: Profile;
 }) {
   return (
-    <section id="work" className="relative">
+    <section id="work" className="section-rule relative">
       <div className="shell section-y">
         <SectionHeading
           index="04"
@@ -128,7 +128,7 @@ export function Work({
           className="max-w-2xl"
         />
 
-        <div className="mt-14 space-y-6">
+        <div className="mt-10 space-y-5">
           {projects.map((project, i) => (
             <ProjectRow key={project.title} project={project} index={i} />
           ))}

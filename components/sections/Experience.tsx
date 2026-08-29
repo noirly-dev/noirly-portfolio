@@ -29,7 +29,7 @@ export function Experience({
   });
 
   return (
-    <section id="experience" className="relative">
+    <section id="experience" className="section-rule relative">
       <div className="shell section-y">
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <SectionHeading index="03" eyebrow="Career" title="Work Experience" />
@@ -40,7 +40,7 @@ export function Experience({
           </Reveal>
         </div>
 
-        <ol ref={railRef} className="relative mt-16 space-y-6 pl-8 md:pl-12">
+        <ol ref={railRef} className="relative mt-10 space-y-5 pl-8 md:pl-12">
           {/* Timeline rail — fills as the reader scrolls through the roles. */}
           <div
             aria-hidden

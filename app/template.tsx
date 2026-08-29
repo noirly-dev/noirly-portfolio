@@ -14,6 +14,7 @@ import { DURATION, EASE_OUT } from "@/lib/motion";
 export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
+      id="main"
       className="flex flex-1 flex-col"
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}

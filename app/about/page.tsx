@@ -1,56 +1,56 @@
-import { about } from "@/data/about";
 import Image from "next/image";
 import Link from "next/link";
+import { getPortfolioContent } from "@/lib/content/server";
 
-export default function About() {
-    return (
-        <section id="about" className="spacing-section bg-background">
-            <div className="container mx-auto spacing-container">
-                <div className="max-w-6xl mx-auto">
-                    <h2 className="text-3xl font-bold text-center mb-16 text-foreground">
-                        About Me
-                    </h2>
+export default async function AboutPage() {
+  const { profile } = await getPortfolioContent();
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        {/* Left: Bio + Button */}
-                        <div className="space-y-6">
-                           {about.bio.map((paragraph, index) => (
-                                <p key={index} className="text-muted-foreground text-lg leading-relaxed">
-                                    {paragraph}
-                                </p>
-                           ))}
-                            {/* Button to Skills Page */}
-                            <Link
-                                href="/skills"
-                                className="btn-accent px-8 py-3 transition-colors font-medium cursor-pointer rounded-sm inline-block"
-                            >
-                                See My Skills
-                            </Link>
-                        </div>
+  return (
+    <section id="about" className="spacing-section bg-background">
+      <div className="spacing-container container mx-auto">
+        <div className="mx-auto max-w-6xl">
+          <h2 className="mb-16 text-center text-3xl font-bold text-foreground">About Me</h2>
 
-                        {/* Right: Image */}
-                        <div className="flex justify-center">
-                            <div className="relative">
-                                <div className="w-80 h-80 bg-secondary border border-border glass-effect flex items-center justify-center overflow-hidden">
-                                    {about.profileImage ? (
-                                        <Image
-                                            src={about.profileImage}
-                                            alt="Profile"
-                                            width={288}
-                                            height={288}
-                                            className="w-72 h-72 object-cover"
-                                            unoptimized
-                                        />
-                                    ) : (
-                                        <span className="text-7xl font-bold text-muted-foreground">A</span>
-                                    )}
-                                </div>
-                                <div className="absolute -top-4 -right-4 w-8 h-8 bg-accent rounded-full" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
+            <div className="space-y-6">
+              <p className="text-lg leading-relaxed text-muted-foreground">{profile.aboutBio}</p>
+              {profile.aboutPoints.map((point) => (
+                <p key={point} className="text-lg leading-relaxed text-muted-foreground">
+                  {point}
+                </p>
+              ))}
+              <Link
+                href="/skills"
+                className="btn-accent inline-block cursor-pointer rounded-sm px-8 py-3 font-medium transition-colors"
+              >
+                See My Skills
+              </Link>
             </div>
-        </section>
-    );
+
+            <div className="flex justify-center">
+              <div className="relative">
+                <div className="glass-effect flex h-80 w-80 items-center justify-center overflow-hidden border border-border bg-secondary">
+                  {profile.profileImage ? (
+                    <Image
+                      src={profile.profileImage}
+                      alt={profile.name}
+                      width={288}
+                      height={288}
+                      className="h-72 w-72 object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <span className="text-7xl font-bold text-muted-foreground">
+                      {profile.name.charAt(0)}
+                    </span>
+                  )}
+                </div>
+                <div className="absolute -top-4 -right-4 h-8 w-8 rounded-full bg-accent" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }

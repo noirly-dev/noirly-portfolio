@@ -24,7 +24,7 @@ export function Stack({
   profile?: Profile;
 }) {
   return (
-    <section id="stack" className="relative">
+    <section id="stack" className="section-rule relative">
       <div className="shell section-y">
         <SectionHeading
           index="02"
@@ -37,7 +37,7 @@ export function Stack({
         <StaggerGroup
           gap={0.08}
           as="ul"
-          className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
+          className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
         >
           {skillCards.map((card, i) => {
             const Icon = SKILL_ICONS[card.iconKey];

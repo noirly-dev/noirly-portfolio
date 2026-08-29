@@ -35,6 +35,7 @@ export interface Profile {
   ctaTitle: string;
   ctaSubtitle: string;
   contact: ProfileContact;
+  profileImage?: string | null;
 }
 
 export const profile: Profile = {

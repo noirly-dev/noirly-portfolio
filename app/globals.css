@@ -56,8 +56,8 @@
   --dur-slow: 620ms;
 
   /* ---- Spacing rhythm (density 4/10 — standard-to-spacious) ---- */
-  --space-section: clamp(5rem, 9vw, 9rem);
-  --space-block: clamp(2.5rem, 4vw, 4rem);
+  --space-section: clamp(3.5rem, 6vw, 6.5rem);
+  --space-block: clamp(2rem, 3vw, 3rem);
 }
 
 /* Color palettes — one per branch. See design-system/contrast-manifest.json */
@@ -125,6 +125,54 @@
 
 section[id] {
   scroll-margin-top: 6.5rem;
+}
+
+/* Visually hidden until keyboard focus — keeps skip link off-screen for mouse users. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.625rem 1rem;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: var(--elev-2);
+  transform: translateY(calc(-100% - 1rem));
+  transition: transform var(--dur-fast) var(--ease-out-expo);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Theme-aware mark sourced from public/logo.svg */
+.logo-mark {
+  display: inline-block;
+  flex-shrink: 0;
+  aspect-ratio: 384 / 396;
+  background-color: currentColor;
+  -webkit-mask-image: url("/logo.svg");
+  mask-image: url("/logo.svg");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.logo-mark-nav {
+  -webkit-mask-size: 58%;
+  mask-size: 58%;
 }
 
 /* ==========================================================================
@@ -236,7 +284,7 @@ section[id] {
 
 .display-xl {
   font-family: var(--font-fraunces), ui-serif, Georgia, serif;
-  font-size: clamp(2.75rem, 8.5vw, 6.5rem);
+  font-size: clamp(2.5rem, 6.4vw, 5.5rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.04em;
@@ -468,4 +516,194 @@ section[id] {
     transparent
   );
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+/* ==========================================================================
+   Ambient page background
+   The page used to be a single flat --bg from header to footer. This builds
+   depth out of five cheap, GPU-friendly layers: a lit wash, a masked grid, a
+   slow accent aurora, a vignette and grain. Every value derives from the
+   active theme via color-mix, so all seven palettes and both schemes work
+   without per-theme edits.
+   ========================================================================== */
+
+:root {
+  --bgfx-beam: color-mix(in srgb, var(--accent) 7%, transparent);
+  --bgfx-blob-accent: color-mix(in srgb, var(--accent) 10%, transparent);
+  --bgfx-blob-accent-soft: color-mix(in srgb, var(--accent) 6%, transparent);
+  --bgfx-blob-neutral: color-mix(in srgb, var(--text) 6%, transparent);
+  --bgfx-grid-line: color-mix(in srgb, var(--text) 5.5%, transparent);
+  --bgfx-grid-size: 76px;
+  --bgfx-vignette: color-mix(in srgb, var(--bg-deep) 32%, transparent);
+  --bgfx-grain: 0.03;
+  --bgfx-wash-top: color-mix(in srgb, var(--surface) 85%, var(--bg));
+  --bgfx-wash-bottom: color-mix(in srgb, var(--bg-deep) 70%, var(--bg));
+}
+
+.dark {
+  --bgfx-beam: color-mix(in srgb, var(--accent) 9%, transparent);
+  --bgfx-blob-accent: color-mix(in srgb, var(--accent) 14%, transparent);
+  --bgfx-blob-accent-soft: color-mix(in srgb, var(--accent) 8%, transparent);
+  --bgfx-blob-neutral: color-mix(in srgb, var(--text) 8%, transparent);
+  --bgfx-grid-line: color-mix(in srgb, var(--text) 7%, transparent);
+  --bgfx-vignette: color-mix(in srgb, var(--bg-deep) 62%, transparent);
+  --bgfx-grain: 0.045;
+  --bgfx-wash-top: color-mix(in srgb, var(--text) 5%, var(--bg));
+  --bgfx-wash-bottom: var(--bg-deep);
+}
+
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  /* Isolate the stack so the drifting blobs never invalidate page layout. */
+  contain: layout paint style;
+}
+
+.site-bg > * {
+  position: absolute;
+  inset: 0;
+}
+
+/* Overhead key light at the top, shadow gathering at the bottom edge. */
+.site-bg-wash {
+  background:
+    radial-gradient(78% 42% at 50% -6%, var(--bgfx-beam), transparent 72%),
+    linear-gradient(
+      180deg,
+      var(--bgfx-wash-top) 0%,
+      var(--bg) 38%,
+      var(--bg) 64%,
+      var(--bgfx-wash-bottom) 100%
+    );
+}
+
+/* Blueprint mesh, faded out before it reaches the content edges. */
+.site-bg-grid {
+  background-image:
+    linear-gradient(to right, var(--bgfx-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--bgfx-grid-line) 1px, transparent 1px);
+  background-size: var(--bgfx-grid-size) var(--bgfx-grid-size);
+  background-position: center top;
+  -webkit-mask-image: radial-gradient(
+    112% 78% at 50% 0%,
+    #000 0%,
+    color-mix(in srgb, #000 45%, transparent) 45%,
+    transparent 76%
+  );
+  mask-image: radial-gradient(
+    112% 78% at 50% 0%,
+    #000 0%,
+    color-mix(in srgb, #000 45%, transparent) 45%,
+    transparent 76%
+  );
+}
+
+/* Slow accent aurora. Transform-only animation — no layout, no filters. */
+.site-bg-blob {
+  position: absolute;
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+.site-bg-blob-a {
+  top: -34vh;
+  left: -24vw;
+  width: 66vw;
+  height: 66vw;
+  min-width: 30rem;
+  min-height: 30rem;
+  background: radial-gradient(closest-side, var(--bgfx-blob-accent), transparent 100%);
+  animation: bgfx-drift-a 34s var(--ease-in-out-quint) infinite;
+}
+
+.site-bg-blob-b {
+  top: 22vh;
+  right: -20vw;
+  width: 52vw;
+  height: 52vw;
+  min-width: 26rem;
+  min-height: 26rem;
+  background: radial-gradient(closest-side, var(--bgfx-blob-neutral), transparent 100%);
+  animation: bgfx-drift-b 44s var(--ease-in-out-quint) infinite;
+}
+
+.site-bg-blob-c {
+  bottom: -30vh;
+  left: 24vw;
+  width: 56vw;
+  height: 56vw;
+  min-width: 26rem;
+  min-height: 26rem;
+  background: radial-gradient(
+    closest-side,
+    var(--bgfx-blob-accent-soft),
+    transparent 100%
+  );
+  animation: bgfx-drift-c 52s var(--ease-in-out-quint) infinite;
+}
+
+@keyframes bgfx-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(7vw, 5vh, 0) scale(1.14);
+  }
+}
+
+@keyframes bgfx-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.06);
+  }
+  50% {
+    transform: translate3d(-6vw, -7vh, 0) scale(1);
+  }
+}
+
+@keyframes bgfx-drift-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-8vw, 4vh, 0) scale(1.1);
+  }
+}
+
+/* Pulls focus back to the centre column. */
+.site-bg-vignette {
+  background: radial-gradient(
+    118% 76% at 50% 42%,
+    transparent 42%,
+    var(--bgfx-vignette) 100%
+  );
+}
+
+/* Same noise as .grain, page-wide — stops the large gradients from banding. */
+.site-bg-grain {
+  opacity: var(--bgfx-grain);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Fading hairline that separates one section band from the next. */
+.section-rule::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--hairline-strong) 22%,
+    var(--hairline-strong) 78%,
+    transparent
+  );
 }

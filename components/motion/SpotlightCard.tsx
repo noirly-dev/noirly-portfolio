@@ -28,8 +28,15 @@ export function SpotlightCard({
   lift = true,
   as = "div",
 }: SpotlightCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const Comp = (motion[as] as React.ElementType) ?? motion.div;
+  // HTMLElement, not HTMLDivElement: `Comp` can render as a div, article, or
+  // li, and the ref only ever touches generic HTMLElement members below.
+  const ref = useRef<HTMLElement>(null);
+  // See the comment on MOTION_TAGS in Reveal.tsx: an explicit, narrow map
+  // keeps `Comp` typed as a union of framer-motion's own components instead
+  // of `React.ElementType`, which resolves through the global
+  // `JSX.IntrinsicElements` and breaks once another library (e.g.
+  // @react-three/fiber) extends that interface with hundreds of elements.
+  const Comp = { div: motion.div, article: motion.article, li: motion.li }[as];
 
   function handleMove(event: React.PointerEvent<HTMLElement>) {
     const el = ref.current;
@@ -41,7 +48,11 @@ export function SpotlightCard({
 
   return (
     <Comp
-      ref={ref}
+      // `Comp`'s ref prop type is an *intersection* of the three tags' ref
+      // types (div/article/li), which no single RefObject can satisfy even
+      // though every element behind it is an HTMLElement. handleMove only
+      // touches generic HTMLElement members, so the cast is safe.
+      ref={ref as React.Ref<HTMLDivElement & HTMLElement & HTMLLIElement>}
       onPointerMove={handleMove}
       className={cn("surface grain spotlight overflow-hidden", className)}
       variants={animateIn ? cardIn : undefined}
