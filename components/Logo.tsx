@@ -7,7 +7,7 @@ type LogoProps = {
   variant?: "default" | "nav";
 };
 
-/** Renders `/logo.svg` with theme-aware color via CSS mask. */
+/** Renders `/logo.svg` — dark mark in light mode, white in dark mode. */
 export function Logo({ className, title, variant = "default" }: LogoProps) {
   return (
     <span
@@ -15,6 +15,8 @@ export function Logo({ className, title, variant = "default" }: LogoProps) {
       role={title ? "img" : undefined}
       aria-label={title}
       aria-hidden={title ? undefined : true}
-    />
+    >
+      <img src="/logo.svg" alt="" className="logo-mark-img" decoding="async" />
+    </span>
   );
 }

@@ -60,6 +60,12 @@ export const PORTFOLIO_THEMES: ThemeDefinition[] = [
 
 export const DEFAULT_THEME_ID = "gold";
 
+export const THEME_IDS = PORTFOLIO_THEMES.map((t) => t.id);
+
+export function isValidThemeId(id: string): id is (typeof THEME_IDS)[number] {
+  return THEME_IDS.includes(id as (typeof THEME_IDS)[number]);
+}
+
 export function getTheme(id: string): ThemeDefinition | undefined {
   return PORTFOLIO_THEMES.find((t) => t.id === id);
 }

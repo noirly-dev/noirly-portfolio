@@ -24,6 +24,7 @@ const footerLinks = [
 ];
 
 export function Footer({ title, profile }: FooterProps) {
+  const brandName = title.replace(/\s*portfolio\s*/gi, "").trim();
   const currentYear = new Date().getFullYear();
   const connectLinks = [
     { label: profile.contact.email.label, href: profile.contact.email.href, external: false },
@@ -40,14 +41,13 @@ export function Footer({ title, profile }: FooterProps) {
               <motion.span whileHover={{ rotate: 90 }} transition={SPRING} className="inline-flex size-16 shrink-0 md:size-[4.5rem]">
                 <Logo variant="nav" className="size-full" />
               </motion.span>
-              <p className="display-md">{title}</p>
+              <p className="display-md">{brandName}</p>
             </div>
             <p className="mono-label mt-4">
               {profile.name} — {profile.role}
             </p>
             <p className="copy mt-4 max-w-sm">
-              Personal portfolio for selected work across web, mobile, and the Noirly
-              product family.
+              Selected work across web, mobile, and the Noirly product family.
             </p>
           </Reveal>
 

@@ -11,6 +11,7 @@ import {
 } from "framer-motion";
 import { Sun, Moon, Menu, X, ArrowUpRight } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { ThemePicker } from "@/components/ThemePicker";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { DURATION, EASE_OUT, EASE_IN_OUT, SPRING, stagger } from "@/lib/motion";
@@ -40,6 +41,7 @@ const menuItem = {
 };
 
 export function Header({ title, navLinks, profile }: HeaderProps) {
+  const brandName = title.replace(/\s*portfolio\s*/gi, "").trim();
   const pathname = usePathname();
   const [activeSection, setActiveSection] = useState("home");
   const [isDark, setIsDark] = useState(true);
@@ -150,7 +152,7 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
             >
               <Logo variant="nav" className="size-full" />
             </motion.span>
-            <span className="hidden items-center gap-3 font-display text-lg font-bold leading-none tracking-[-0.04em] uppercase sm:flex md:text-xl">
+            <span className="hidden items-center gap-3 font-display text-xl font-bold leading-none tracking-[-0.04em] uppercase sm:flex md:text-2xl lg:text-3xl">
               <motion.span
                 whileHover={{ rotate: 90 }}
                 transition={SPRING}
@@ -158,7 +160,7 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
               >
                 <Logo variant="nav" className="size-full" />
               </motion.span>
-              <span className="truncate">{title}</span>
+              <span className="truncate">{brandName}</span>
             </span>
           </Link>
 
@@ -172,7 +174,7 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
                     <Link
                       href={link.href}
                       aria-current={active ? "page" : undefined}
-                      className="relative block rounded-full px-3.5 py-2 font-mono text-[11px] font-semibold tracking-[0.14em] uppercase transition-colors duration-200"
+                      className="relative block rounded-full px-3.5 py-2 font-mono text-xs font-semibold tracking-[0.14em] uppercase transition-colors duration-200"
                       style={{ color: active ? "var(--bg)" : "var(--text-muted)" }}
                     >
                       {active ? (
@@ -191,6 +193,7 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
           </nav>
 
           <div className="flex shrink-0 items-center gap-2">
+            <ThemePicker />
             <motion.button
               type="button"
               onClick={toggleTheme}
@@ -304,6 +307,10 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
                 {profile.contact.email.label}
                 <ArrowUpRight size={13} aria-hidden />
               </motion.a>
+
+              <motion.div variants={menuItem}>
+                <ThemePicker variant="menu" onSelect={() => setMenuOpen(false)} />
+              </motion.div>
             </motion.nav>
           </motion.div>
         ) : null}

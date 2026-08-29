@@ -122,7 +122,7 @@ export function Work({
       <div className="shell section-y">
         <SectionHeading
           index="04"
-          eyebrow="Portfolio"
+          eyebrow="Selected Work"
           title="Featured Projects"
           subtitle={profile.workSubtitle}
           className="max-w-2xl"

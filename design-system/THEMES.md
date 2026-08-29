@@ -1,6 +1,6 @@
 # Color themes
 
-Accessible color palettes for the Noirly portfolio, verified against [WCAG AA normal text (4.5:1)](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html) using the same methodology as [colourcontrast.cc](https://colourcontrast.cc/).
+Accessible color palettes for Noirly, verified against [WCAG AA normal text (4.5:1)](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html) using the same methodology as [colourcontrast.cc](https://colourcontrast.cc/).
 
 ## Palettes
 

@@ -84,7 +84,9 @@ function mapCatalogProjects(projects: Array<Record<string, unknown>>): CatalogPr
 }
 
 async function fetchFromApi(): Promise<PortfolioContent | null> {
-  const base = process.env.PORTFOLIO_CONTENT_API_URL?.replace(/\/$/, "");
+  const base = (
+    process.env.PORTFOLIO_CONTENT_API_URL ?? process.env.SITE_CONTENT_API_URL
+  )?.replace(/\/$/, "");
   if (!base) return null;
 
   try {

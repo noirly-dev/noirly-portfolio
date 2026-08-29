@@ -5,7 +5,10 @@ import { Footer } from "@/components/Footer";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { ThemeStyles } from "@/components/ThemeStyles";
 import { SiteBackground } from "@/components/SiteBackground";
+import { FaviconTheme } from "@/components/FaviconTheme";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { getPortfolioContent } from "@/lib/content/server";
+import { THEME_IDS } from "@/lib/themes/index";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -47,8 +50,35 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: {
       icon: [
         {
-          url: "/logo.svg",
-          type: "image/svg+xml",
+          url: "/favicon-light-48.png",
+          type: "image/png",
+          sizes: "48x48",
+          media: "(prefers-color-scheme: light)",
+        },
+        {
+          url: "/favicon-dark-48.png",
+          type: "image/png",
+          sizes: "48x48",
+          media: "(prefers-color-scheme: dark)",
+        },
+        {
+          url: "/favicon-light-192.png",
+          type: "image/png",
+          sizes: "192x192",
+          media: "(prefers-color-scheme: light)",
+        },
+        {
+          url: "/favicon-dark-192.png",
+          type: "image/png",
+          sizes: "192x192",
+          media: "(prefers-color-scheme: dark)",
+        },
+      ],
+      apple: [
+        {
+          url: "/apple-icon.png",
+          type: "image/png",
+          sizes: "180x180",
         },
       ],
     },
@@ -59,9 +89,9 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: "Noirly Portfolio",
       images: [
         {
-          url: "/logo.svg",
-          width: 384,
-          height: 396,
+          url: "/favicon-light-192.png",
+          width: 192,
+          height: 192,
           alt: "Noirly Portfolio",
         },
       ],
@@ -71,7 +101,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary",
       title,
       description: profile.description,
-      images: ["/logo.svg"],
+      images: ["/favicon-light-192.png"],
     },
   };
 }
@@ -96,13 +126,13 @@ export default async function RootLayout({
         "@type": "Person",
         name: profile.name,
         url: "https://www.aneesh-pissay.in/",
-        image: "https://www.aneesh-pissay.in/logo.svg",
+        image: "https://www.aneesh-pissay.in/favicon-light-192.png",
       },
       {
         "@type": "Organization",
         name: "Noirly Portfolio",
         url: "https://www.aneesh-pissay.in/",
-        logo: "https://www.aneesh-pissay.in/logo.svg",
+        logo: "https://www.aneesh-pissay.in/favicon-light-192.png",
       },
     ],
   };
@@ -120,8 +150,21 @@ export default async function RootLayout({
             __html: `
           try {
             var t = localStorage.getItem('theme');
-            if (t === 'light') document.documentElement.classList.remove('dark');
-            else document.documentElement.classList.add('dark');
+            var isDark = t !== 'light';
+            if (isDark) document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            var validPalettes = ${JSON.stringify(THEME_IDS)};
+            var defaultPalette = ${JSON.stringify(content.theme.id)};
+            var palette = localStorage.getItem('palette');
+            if (!palette || validPalettes.indexOf(palette) === -1) palette = defaultPalette;
+            document.documentElement.dataset.theme = palette;
+            var favicon = document.createElement('link');
+            favicon.rel = 'icon';
+            favicon.type = 'image/png';
+            favicon.sizes = '48x48';
+            favicon.dataset.themeSync = 'true';
+            favicon.href = isDark ? '/favicon-dark-48.png' : '/favicon-light-48.png';
+            document.head.appendChild(favicon);
           } catch(e) {}
         `,
           }}
@@ -147,11 +190,14 @@ export default async function RootLayout({
           Skip to content
         </a>
         <SiteBackground />
-        <MotionProvider>
-          <Header title="Noirly Portfolio" navLinks={navLinks} profile={profile} />
-          {children}
-          <Footer title="Noirly Portfolio" profile={profile} />
-        </MotionProvider>
+        <FaviconTheme />
+        <ThemeProvider defaultThemeId={content.theme.id}>
+          <MotionProvider>
+            <Header title="Noirly Portfolio" navLinks={navLinks} profile={profile} />
+            {children}
+            <Footer title="Noirly Portfolio" profile={profile} />
+          </MotionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
