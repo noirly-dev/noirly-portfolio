@@ -314,6 +314,8 @@ export function HeroCanvas({ className }: { className?: string }) {
       );
     }
 
+    let measureFrame = 0;
+
     function measure(): void {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
@@ -329,9 +331,17 @@ export function HeroCanvas({ className }: { className?: string }) {
       render();
     }
 
-    const resizeObserver = new ResizeObserver(measure);
+    function scheduleMeasure(): void {
+      if (measureFrame !== 0) return;
+      measureFrame = requestAnimationFrame(() => {
+        measureFrame = 0;
+        measure();
+      });
+    }
+
+    const resizeObserver = new ResizeObserver(scheduleMeasure);
     resizeObserver.observe(canvas);
-    measure();
+    scheduleMeasure();
 
     // Repaint in the new palette when the theme picker switches accents.
     const themeObserver = new MutationObserver(() => {

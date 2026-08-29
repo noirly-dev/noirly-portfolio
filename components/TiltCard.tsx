@@ -4,6 +4,7 @@ import { useRef, type ReactNode } from "react";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCoarsePointer } from "@/hooks/useCoarsePointer";
+import { useCachedRect } from "@/hooks/useCachedRect";
 
 /**
  * Perspective tilt for a card-shaped child.
@@ -40,6 +41,7 @@ interface TiltCardProps {
 
 export function TiltCard({ children, className, cursor = "hover" }: TiltCardProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const rectRef = useCachedRect(ref);
   const reduced = useReducedMotion();
   const coarse = useCoarsePointer();
   const enabled = !coarse && !reduced;
@@ -52,9 +54,9 @@ export function TiltCard({ children, className, cursor = "hover" }: TiltCardProp
   function handleMove(event: React.MouseEvent<HTMLDivElement>): void {
     if (!enabled) return;
     const el = ref.current;
-    if (!el) return;
+    const rect = rectRef.current;
+    if (!el || !rect) return;
 
-    const rect = el.getBoundingClientRect();
     const px = (event.clientX - rect.left) / rect.width;
     const py = (event.clientY - rect.top) / rect.height;
 

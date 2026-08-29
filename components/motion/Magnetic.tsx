@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { SPRING_SOFT } from "@/lib/motion";
+import { useCachedRect } from "@/hooks/useCachedRect";
 
 interface MagneticProps extends React.PropsWithChildren {
   className?: string;
@@ -20,6 +21,7 @@ interface MagneticProps extends React.PropsWithChildren {
  */
 export function Magnetic({ children, className, strength = 14 }: MagneticProps) {
   const ref = useRef<HTMLSpanElement>(null);
+  const rectRef = useCachedRect(ref);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, SPRING_SOFT);
@@ -27,9 +29,8 @@ export function Magnetic({ children, className, strength = 14 }: MagneticProps) 
 
   function handleMove(event: React.PointerEvent<HTMLSpanElement>) {
     if (event.pointerType !== "mouse") return;
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
+    const rect = rectRef.current;
+    if (!rect) return;
     const dx = event.clientX - (rect.left + rect.width / 2);
     const dy = event.clientY - (rect.top + rect.height / 2);
     x.set((dx / (rect.width / 2)) * strength);

@@ -176,10 +176,9 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
                       style={{ color: active ? "var(--bg)" : "var(--text-muted)" }}
                     >
                       {active ? (
-                        <motion.span
-                          layoutId="nav-pill"
-                          className="absolute inset-0 rounded-full bg-[var(--text)]"
-                          transition={SPRING}
+                        <span
+                          aria-hidden
+                          className="absolute inset-0 rounded-full bg-[var(--text)] transition-opacity duration-200"
                         />
                       ) : null}
                       <span className="relative z-10">{link.label}</span>

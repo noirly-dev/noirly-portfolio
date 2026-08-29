@@ -4,6 +4,8 @@ import { forwardRef, useRef } from "react";
 import { motion } from "framer-motion";
 import { EASE_OUT, DURATION, VIEWPORT, cardIn } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { useCachedRect } from "@/hooks/useCachedRect";
+import { useCoarsePointer } from "@/hooks/useCoarsePointer";
 
 interface SpotlightCardProps extends React.PropsWithChildren {
   className?: string;
@@ -37,12 +39,15 @@ export const SpotlightCard = forwardRef<HTMLElement, SpotlightCardProps>(
     forwardedRef,
   ) {
     const internalRef = useRef<HTMLElement>(null);
+    const rectRef = useCachedRect(internalRef);
+    const coarse = useCoarsePointer();
     const Comp = { div: motion.div, article: motion.article, li: motion.li }[as];
 
     function handleMove(event: React.PointerEvent<HTMLElement>) {
+      if (coarse || event.pointerType !== "mouse") return;
       const el = internalRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
+      const rect = rectRef.current;
+      if (!el || !rect) return;
       el.style.setProperty("--mx", `${event.clientX - rect.left}px`);
       el.style.setProperty("--my", `${event.clientY - rect.top}px`);
     }
@@ -59,7 +64,7 @@ export const SpotlightCard = forwardRef<HTMLElement, SpotlightCardProps>(
         initial={animateIn ? "hidden" : undefined}
         whileInView={animateIn ? "show" : undefined}
         viewport={animateIn ? VIEWPORT : undefined}
-        whileHover={lift ? { y: -5 } : undefined}
+        whileHover={lift && !coarse ? { y: -5 } : undefined}
         transition={{ duration: DURATION.base, ease: EASE_OUT }}
       >
         {children}
