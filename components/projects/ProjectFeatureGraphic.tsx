@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ProjectFeatureGraphicProps {
@@ -18,6 +18,140 @@ function initials(title: string): string {
 function isSvgLogo(src: string): boolean {
   const path = src.split("?")[0]?.split("#")[0] ?? "";
   return path.toLowerCase().endsWith(".svg");
+}
+
+const BLACK_FILL =
+  /^(?:#000000?|black|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\)|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*1\s*\))$/i;
+
+function isBlackFill(value: string | null | undefined): boolean {
+  return value != null && BLACK_FILL.test(value.trim());
+}
+
+function isBlackFilled(el: Element): boolean {
+  const fill = el.getAttribute("fill");
+  const styleFill = el.getAttribute("style")?.match(/fill:\s*([^;]+)/i)?.[1]?.trim();
+  return isBlackFill(fill) || isBlackFill(styleFill);
+}
+
+function isBackgroundRect(el: Element): boolean {
+  if (el.tagName.toLowerCase() !== "rect") return false;
+
+  const fill = el.getAttribute("fill");
+  const styleFill = el.getAttribute("style")?.match(/fill:\s*([^;]+)/i)?.[1]?.trim();
+  if (!isBlackFill(fill) && !isBlackFill(styleFill)) return false;
+
+  const width = el.getAttribute("width") ?? "";
+  const height = el.getAttribute("height") ?? "";
+  return (
+    width === "100%" ||
+    height === "100%" ||
+    (Number.parseFloat(width) >= 64 && Number.parseFloat(height) >= 64)
+  );
+}
+
+function themeInlineStyle(style: string): string {
+  return style
+    .replace(/fill:\s*[^;]+/gi, "fill:currentColor")
+    .replace(/stroke:\s*[^;]+/gi, "stroke:currentColor");
+}
+
+function themeElementColors(el: Element): void {
+  const fill = el.getAttribute("fill");
+  if (fill && fill !== "none" && fill !== "transparent") {
+    el.setAttribute("fill", "currentColor");
+  }
+
+  const stroke = el.getAttribute("stroke");
+  if (stroke && stroke !== "none" && stroke !== "transparent") {
+    el.setAttribute("stroke", "currentColor");
+  }
+
+  const style = el.getAttribute("style");
+  if (style) {
+    el.setAttribute("style", themeInlineStyle(style));
+  }
+}
+
+/** Strip canvas backgrounds and remap icon fills to currentColor for theme tinting. */
+function themeSvgMarkup(raw: string): string {
+  const doc = new DOMParser().parseFromString(raw.trim(), "image/svg+xml");
+  const svgEl = doc.documentElement;
+  if (svgEl.tagName.toLowerCase() !== "svg") return raw;
+
+  svgEl.querySelectorAll("rect").forEach((rect) => {
+    if (isBackgroundRect(rect)) rect.remove();
+  });
+
+  const firstShape = svgEl.querySelector(":scope > rect, :scope > path, :scope > g");
+  if (firstShape && isBlackFilled(firstShape)) {
+    firstShape.remove();
+  }
+
+  svgEl.querySelectorAll("g,path,circle,ellipse,polygon,polyline,rect,line").forEach(themeElementColors);
+
+  svgEl.querySelectorAll("path:not([fill])").forEach((path) => {
+    if (!path.getAttribute("stroke")) {
+      path.setAttribute("fill", "currentColor");
+    }
+  });
+
+  svgEl.setAttribute("class", "project-logo-mark-inline");
+  svgEl.setAttribute("focusable", "false");
+  svgEl.setAttribute("aria-hidden", "true");
+  svgEl.removeAttribute("width");
+  svgEl.removeAttribute("height");
+
+  return svgEl.outerHTML;
+}
+
+function ThemedSvgLogo({
+  src,
+  className,
+  onError,
+}: {
+  src: string;
+  className?: string;
+  onError: () => void;
+}) {
+  const [markup, setMarkup] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch(src)
+      .then((res) => {
+        if (!res.ok) throw new Error("svg fetch failed");
+        return res.text();
+      })
+      .then((text) => {
+        if (!active) return;
+        if (!text.includes("<svg")) throw new Error("not svg");
+        setMarkup(themeSvgMarkup(text));
+      })
+      .catch(() => {
+        if (active) onError();
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [src, onError]);
+
+  return (
+    <span
+      className={cn(
+        "project-logo-mark project-logo-mark--svg text-[var(--accent)]",
+        className,
+      )}
+    >
+      {markup ? (
+        <span
+          className="project-logo-mark-inner"
+          dangerouslySetInnerHTML={{ __html: markup }}
+        />
+      ) : null}
+    </span>
+  );
 }
 
 export function ProjectFeatureGraphic({
@@ -106,6 +240,7 @@ export function ProjectLogo({
   // The initials mark below is a perfectly good stand-in, so fall through to it
   // whenever the file fails to load rather than only when the path is empty.
   const [failed, setFailed] = useState(false);
+  const [svgThemingFailed, setSvgThemingFailed] = useState(false);
 
   // onError alone is not enough: the image is in the SSR HTML, so a 404 fires
   // its error event before hydration attaches the handler and the miss is
@@ -115,33 +250,13 @@ export function ProjectLogo({
   }, []);
 
   if (logo && !failed) {
-    if (isSvgLogo(logo)) {
+    if (isSvgLogo(logo) && !svgThemingFailed) {
       return (
-        <span
-          className={cn(
-            "project-logo-mark project-logo-mark--svg",
-            className,
-          )}
-        >
-          {/* Hidden probe — mask rendering has no onError, so detect 404s the same way as <img>. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            ref={catchAlreadyFailed}
-            src={logo}
-            alt=""
-            onError={() => setFailed(true)}
-            className="sr-only"
-            aria-hidden
-          />
-          <span
-            className="project-logo-mark-svg"
-            style={{
-              WebkitMaskImage: `url("${logo}")`,
-              maskImage: `url("${logo}")`,
-            }}
-            aria-hidden
-          />
-        </span>
+        <ThemedSvgLogo
+          src={logo}
+          className={className}
+          onError={() => setSvgThemingFailed(true)}
+        />
       );
     }
 

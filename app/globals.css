@@ -191,19 +191,21 @@ section[id] {
 
 .project-logo-mark--svg {
   background: var(--accent-soft);
+  color: var(--accent);
 }
 
-.project-logo-mark-svg {
-  display: block;
+.project-logo-mark-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 68%;
   height: 68%;
-  background-color: var(--accent);
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+}
+
+.project-logo-mark-inline {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* ==========================================================================
