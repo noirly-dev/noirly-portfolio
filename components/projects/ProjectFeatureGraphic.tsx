@@ -16,15 +16,21 @@ function initials(title: string): string {
 }
 
 function isSvgLogo(src: string): boolean {
+  const lower = src.toLowerCase();
+  if (lower.includes("image/svg+xml")) return true;
   const path = src.split("?")[0]?.split("#")[0] ?? "";
-  return path.toLowerCase().endsWith(".svg");
+  return path.endsWith(".svg");
 }
 
-const BLACK_FILL =
-  /^(?:#000000?|black|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\)|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*1\s*\))$/i;
+const CANVAS_FILL =
+  /^(?:#000000?|black|#fff(?:fff)?|white|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\)|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*1\s*\)|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))$/i;
+
+function isCanvasFill(value: string | null | undefined): boolean {
+  return value != null && CANVAS_FILL.test(value.trim());
+}
 
 function isBlackFill(value: string | null | undefined): boolean {
-  return value != null && BLACK_FILL.test(value.trim());
+  return value != null && /^(?:#000000?|black|rgb\(\s*0\s*,\s*0\s*,\s*0\s*\)|rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*1\s*\))$/i.test(value.trim());
 }
 
 function isBlackFilled(el: Element): boolean {
@@ -33,12 +39,18 @@ function isBlackFilled(el: Element): boolean {
   return isBlackFill(fill) || isBlackFill(styleFill);
 }
 
+function isCanvasFilled(el: Element): boolean {
+  const fill = el.getAttribute("fill");
+  const styleFill = el.getAttribute("style")?.match(/fill:\s*([^;]+)/i)?.[1]?.trim();
+  return isCanvasFill(fill) || isCanvasFill(styleFill);
+}
+
 function isBackgroundRect(el: Element): boolean {
   if (el.tagName.toLowerCase() !== "rect") return false;
 
   const fill = el.getAttribute("fill");
   const styleFill = el.getAttribute("style")?.match(/fill:\s*([^;]+)/i)?.[1]?.trim();
-  if (!isBlackFill(fill) && !isBlackFill(styleFill)) return false;
+  if (!isCanvasFill(fill) && !isCanvasFill(styleFill)) return false;
 
   const width = el.getAttribute("width") ?? "";
   const height = el.getAttribute("height") ?? "";
@@ -49,26 +61,29 @@ function isBackgroundRect(el: Element): boolean {
   );
 }
 
-function themeInlineStyle(style: string): string {
-  return style
-    .replace(/fill:\s*[^;]+/gi, "fill:currentColor")
-    .replace(/stroke:\s*[^;]+/gi, "stroke:currentColor");
+function isExplicitNone(value: string | null | undefined): boolean {
+  return value === "none" || value === "transparent";
 }
 
-function themeElementColors(el: Element): void {
+const ACCENT = "var(--accent)";
+
+function themeShapeElement(el: Element): void {
+  el.removeAttribute("class");
+  el.removeAttribute("style");
+
   const fill = el.getAttribute("fill");
-  if (fill && fill !== "none" && fill !== "transparent") {
-    el.setAttribute("fill", "currentColor");
-  }
-
   const stroke = el.getAttribute("stroke");
-  if (stroke && stroke !== "none" && stroke !== "transparent") {
-    el.setAttribute("stroke", "currentColor");
+  const hasStroke = stroke != null && !isExplicitNone(stroke);
+  const fillIsNone = isExplicitNone(fill);
+
+  if (fillIsNone || (hasStroke && fill == null)) {
+    el.setAttribute("fill", "none");
+  } else {
+    el.setAttribute("fill", ACCENT);
   }
 
-  const style = el.getAttribute("style");
-  if (style) {
-    el.setAttribute("style", themeInlineStyle(style));
+  if (hasStroke) {
+    el.setAttribute("stroke", ACCENT);
   }
 }
 
@@ -78,26 +93,38 @@ function themeSvgMarkup(raw: string): string {
   const svgEl = doc.documentElement;
   if (svgEl.tagName.toLowerCase() !== "svg") return raw;
 
+  svgEl.querySelectorAll("style").forEach((style) => style.remove());
+
   svgEl.querySelectorAll("rect").forEach((rect) => {
     if (isBackgroundRect(rect)) rect.remove();
   });
 
+  svgEl.querySelectorAll("path").forEach((path) => {
+    if (!isCanvasFilled(path)) return;
+    const d = path.getAttribute("d") ?? "";
+    if (path.parentElement === svgEl || d.length > 100) path.remove();
+  });
+
   const firstShape = svgEl.querySelector(":scope > rect, :scope > path, :scope > g");
-  if (firstShape && isBlackFilled(firstShape)) {
+  if (firstShape && (isBlackFilled(firstShape) || isCanvasFilled(firstShape))) {
     firstShape.remove();
   }
 
-  svgEl.querySelectorAll("g,path,circle,ellipse,polygon,polyline,rect,line").forEach(themeElementColors);
-
-  svgEl.querySelectorAll("path:not([fill])").forEach((path) => {
-    if (!path.getAttribute("stroke")) {
-      path.setAttribute("fill", "currentColor");
-    }
+  svgEl.querySelectorAll("g").forEach((group) => {
+    group.removeAttribute("class");
+    group.removeAttribute("style");
+    group.removeAttribute("fill");
+    group.removeAttribute("stroke");
   });
+
+  svgEl
+    .querySelectorAll("path,circle,ellipse,polygon,polyline,rect,line")
+    .forEach(themeShapeElement);
 
   svgEl.setAttribute("class", "project-logo-mark-inline");
   svgEl.setAttribute("focusable", "false");
   svgEl.setAttribute("aria-hidden", "true");
+  svgEl.setAttribute("fill", "none");
   svgEl.removeAttribute("width");
   svgEl.removeAttribute("height");
 
@@ -117,8 +144,9 @@ function ThemedSvgLogo({
 
   useEffect(() => {
     let active = true;
+    const proxySrc = `/api/project-logo?src=${encodeURIComponent(src)}`;
 
-    fetch(src)
+    fetch(proxySrc)
       .then((res) => {
         if (!res.ok) throw new Error("svg fetch failed");
         return res.text();
@@ -139,10 +167,8 @@ function ThemedSvgLogo({
 
   return (
     <span
-      className={cn(
-        "project-logo-mark project-logo-mark--svg text-[var(--accent)]",
-        className,
-      )}
+      className={cn("project-logo-mark project-logo-mark--svg", className)}
+      style={{ color: "var(--accent)" }}
     >
       {markup ? (
         <span

@@ -206,6 +206,25 @@ section[id] {
   display: block;
   width: 100%;
   height: 100%;
+  color: inherit;
+}
+
+/* Override any remaining hardcoded SVG palette. */
+.project-logo-mark-inner svg [fill]:not([fill="none"]) {
+  fill: var(--accent) !important;
+}
+
+.project-logo-mark-inner svg [stroke]:not([stroke="none"]) {
+  stroke: var(--accent) !important;
+}
+
+.project-logo-mark-inner svg path:not([fill="none"]):not([stroke]) {
+  fill: var(--accent) !important;
+}
+
+.project-logo-mark-inner svg path[stroke]:not([stroke="none"]) {
+  fill: none !important;
+  stroke: var(--accent) !important;
 }
 
 /* ==========================================================================
