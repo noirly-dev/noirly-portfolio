@@ -1,20 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "@/components/sections/SectionHeading";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { SpotlightCard } from "@/components/motion/SpotlightCard";
 import { TiltCard } from "@/components/TiltCard";
 import {
   ProjectFeatureGraphic,
   ProjectLogo,
 } from "@/components/projects/ProjectFeatureGraphic";
-import { cardIn, VIEWPORT } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 import { profile as defaultProfile } from "@/data/profile";
 import { featuredProjects as defaultProjects, type FeaturedProject } from "@/data/projects";
-import { cn } from "@/lib/utils";
 import type { Profile } from "@/data/profile";
 
 interface ProjectRowProps {
@@ -23,27 +21,17 @@ interface ProjectRowProps {
 }
 
 function ProjectRow({ project, index }: ProjectRowProps) {
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const imageY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
   const flip = index % 2 === 1;
 
   return (
-    // <TiltCard> owns the perspective and the pointer maths; the article keeps
-    // its own scroll entrance. Nesting them this way means the tilt transform
-    // and the reveal transform never fight over the same element.
+    // <TiltCard> owns the perspective and the pointer maths; <SpotlightCard>
+    // keeps its own scroll entrance and cursor spotlight. Nesting them this way
+    // means the tilt transform and the reveal transform never share an element.
     <TiltCard>
-      <motion.article
-        ref={ref}
-        variants={cardIn}
-        initial="hidden"
-        whileInView="show"
-        viewport={VIEWPORT}
-        className="surface grain group h-full overflow-hidden"
+      <SpotlightCard
+        as="article"
+        lift={false}
+        className="group h-full"
       >
         <div
           className={cn(
@@ -51,17 +39,14 @@ function ProjectRow({ project, index }: ProjectRowProps) {
             flip && "lg:flex-row-reverse",
           )}
         >
-          <div className="relative min-h-[240px] overflow-hidden bg-[var(--bg-deep)] lg:min-h-[340px] lg:w-[56%]">
-            <motion.div style={{ y: imageY }} className="absolute inset-[-6%]">
-              <div className="relative h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]">
-                <ProjectFeatureGraphic
-                  title={project.title}
-                  type={project.type}
-                  description={project.description}
-                  stack={project.stack}
-                />
-              </div>
-            </motion.div>
+          {/* The graphic is a rendered composition, not a photograph. It used to
+              sit in an `inset-[-6%]` box with a scroll-parallax translate, which
+              crops ~38px off each side and up to 12% off the top or bottom — fine
+              for an image, but it sliced this plate's padding and its bottom panel,
+              and left nothing lined up with the card edges. It now fills the column
+              exactly and sizes to its own content. */}
+          <div className="relative flex min-h-[240px] overflow-hidden bg-[var(--bg-deep)] lg:min-h-[340px] lg:w-[56%]">
+            <ProjectFeatureGraphic title={project.title} type={project.type} />
           </div>
 
           <div
@@ -112,7 +97,7 @@ function ProjectRow({ project, index }: ProjectRowProps) {
             </div>
           </div>
         </div>
-      </motion.article>
+      </SpotlightCard>
     </TiltCard>
   );
 }

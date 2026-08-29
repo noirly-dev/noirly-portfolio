@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useContext,
   useLayoutEffect,
   useMemo,
@@ -9,15 +10,18 @@ import {
   type ReactNode,
 } from "react";
 import {
-  buildThemeCss,
+  applyPalette,
+  PALETTE_STORAGE_KEY,
+  readStoredPalette,
+} from "@/lib/themes/palette";
+import {
   DEFAULT_THEME_ID,
-  getTheme,
   isValidThemeId,
   PORTFOLIO_THEMES,
   type ThemeDefinition,
 } from "@/lib/themes/index";
 
-export const PALETTE_STORAGE_KEY = "palette";
+export { applyPalette, PALETTE_STORAGE_KEY, readStoredPalette };
 
 type ThemeContextValue = {
   paletteId: string;
@@ -26,25 +30,6 @@ type ThemeContextValue = {
 };
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
-
-export function applyPalette(themeId: string) {
-  const theme = getTheme(themeId) ?? getTheme(DEFAULT_THEME_ID)!;
-  document.documentElement.dataset.theme = theme.id;
-  const el = document.getElementById("noirly-dynamic-theme");
-  if (el) {
-    el.textContent = buildThemeCss(theme);
-  }
-}
-
-export function readStoredPalette(fallback: string): string {
-  try {
-    const stored = localStorage.getItem(PALETTE_STORAGE_KEY);
-    if (stored && isValidThemeId(stored)) return stored;
-  } catch {
-    /* private mode */
-  }
-  return isValidThemeId(fallback) ? fallback : DEFAULT_THEME_ID;
-}
 
 export function ThemeProvider({
   defaultThemeId,
@@ -58,26 +43,52 @@ export function ThemeProvider({
     : DEFAULT_THEME_ID;
   const [paletteId, setPaletteId] = useState(resolvedDefault);
 
-  useLayoutEffect(() => {
-    const id = readStoredPalette(resolvedDefault);
-    setPaletteId(id);
-    applyPalette(id);
-  }, [resolvedDefault]);
+  const syncPalette = useCallback(
+    (id: string) => {
+      const next = isValidThemeId(id) ? id : resolvedDefault;
+      setPaletteId(next);
+      applyPalette(next, undefined, resolvedDefault);
+    },
+    [resolvedDefault],
+  );
 
-  const setPalette = (id: string) => {
-    if (!isValidThemeId(id)) return;
-    setPaletteId(id);
-    applyPalette(id);
-    try {
-      localStorage.setItem(PALETTE_STORAGE_KEY, id);
-    } catch {
-      /* private mode */
+  useLayoutEffect(() => {
+    syncPalette(readStoredPalette(resolvedDefault));
+
+    function onStorage(event: StorageEvent) {
+      if (event.key !== PALETTE_STORAGE_KEY || !event.newValue) return;
+      syncPalette(event.newValue);
     }
-  };
+
+    function onPageShow(event: PageTransitionEvent) {
+      if (!event.persisted) return;
+      syncPalette(readStoredPalette(resolvedDefault));
+    }
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("pageshow", onPageShow);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("pageshow", onPageShow);
+    };
+  }, [resolvedDefault, syncPalette]);
+
+  const setPalette = useCallback(
+    (id: string) => {
+      if (!isValidThemeId(id)) return;
+      syncPalette(id);
+      try {
+        localStorage.setItem(PALETTE_STORAGE_KEY, id);
+      } catch {
+        /* private mode */
+      }
+    },
+    [syncPalette],
+  );
 
   const value = useMemo(
     () => ({ paletteId, setPalette, themes: PORTFOLIO_THEMES }),
-    [paletteId],
+    [paletteId, setPalette],
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;

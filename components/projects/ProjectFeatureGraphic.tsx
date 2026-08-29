@@ -1,12 +1,11 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ProjectFeatureGraphicProps {
   title: string;
   type: string;
-  description?: string;
-  stack?: string[];
   className?: string;
 }
 
@@ -19,11 +18,8 @@ function initials(title: string): string {
 export function ProjectFeatureGraphic({
   title,
   type,
-  description,
-  stack = [],
   className,
 }: ProjectFeatureGraphicProps) {
-  const tags = stack.slice(0, 5);
   const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   return (
@@ -61,45 +57,29 @@ export function ProjectFeatureGraphic({
           {title}
         </h3>
 
-        {description ? (
-          <p className="copy mt-4 max-w-md text-sm text-[var(--text-secondary)] md:text-base">
-            {description.length > 120 ? `${description.slice(0, 119)}…` : description}
-          </p>
-        ) : null}
+        {/* The description and the stack tags deliberately do not appear here.
+            They are rendered verbatim in the text column immediately beside
+            this plate, and printing them twice was both the duplication in the
+            design and the reason the composition outgrew its panel. */}
 
-        <div className="mt-auto flex flex-col gap-6 pt-8 lg:flex-row lg:items-end lg:justify-between">
-          {/* Mock UI panel */}
-          <div className="hidden w-full max-w-xs shrink-0 rounded-[var(--r-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-4 shadow-[var(--elev-1)] sm:block">
-            <div className="h-2 w-20 rounded-full bg-[var(--accent)]" />
-            <div className="mt-3 h-1.5 w-32 rounded-full bg-[var(--text-muted)]/30" />
-            <div className="mt-4 space-y-2.5">
-              {[0.9, 0.55, 0.35].map((opacity) => (
-                <div
-                  key={opacity}
-                  className="flex items-center gap-3 rounded-[var(--r-md)] border border-[var(--hairline)] bg-[var(--bg-deep)] p-3"
-                >
-                  <span
-                    className="h-3 w-3 shrink-0 rounded-full bg-[var(--accent)]"
-                    style={{ opacity }}
-                  />
-                  <span className="h-2 flex-1 rounded-full bg-[var(--text)]/15" />
-                </div>
-              ))}
-            </div>
+        {/* Mock UI panel */}
+        <div className="mt-auto hidden w-full max-w-xs shrink-0 rounded-[var(--r-lg)] border border-[var(--hairline)] bg-[var(--surface)] p-4 shadow-[var(--elev-1)] sm:block">
+          <div className="h-2 w-20 rounded-full bg-[var(--accent)]" />
+          <div className="mt-3 h-1.5 w-32 rounded-full bg-[var(--text-muted)]/30" />
+          <div className="mt-4 space-y-2.5">
+            {[0.9, 0.55, 0.35].map((opacity) => (
+              <div
+                key={opacity}
+                className="flex items-center gap-3 rounded-[var(--r-md)] border border-[var(--hairline)] bg-[var(--bg-deep)] p-3"
+              >
+                <span
+                  className="h-3 w-3 shrink-0 rounded-full bg-[var(--accent)]"
+                  style={{ opacity }}
+                />
+                <span className="h-2 flex-1 rounded-full bg-[var(--text)]/15" />
+              </div>
+            ))}
           </div>
-
-          {tags.length > 0 ? (
-            <ul className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <li
-                  key={tag}
-                  className="rounded-full border border-[var(--hairline)] bg-[var(--surface)] px-3 py-1 text-xs font-medium text-[var(--text-secondary)]"
-                >
-                  {tag}
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </div>
 
         <p className="mono-label mt-6 text-right text-[var(--text-muted)]">{slug || "project"}</p>
@@ -117,12 +97,26 @@ export function ProjectLogo({
   logo?: string | null;
   className?: string;
 }) {
-  if (logo) {
+  // A logo path that 404s used to render the browser's broken-image glyph.
+  // The initials mark below is a perfectly good stand-in, so fall through to it
+  // whenever the file fails to load rather than only when the path is empty.
+  const [failed, setFailed] = useState(false);
+
+  // onError alone is not enough: the image is in the SSR HTML, so a 404 fires
+  // its error event before hydration attaches the handler and the miss is
+  // permanent. A complete image with no intrinsic width is a failed one.
+  const catchAlreadyFailed = useCallback((node: HTMLImageElement | null) => {
+    if (node !== null && node.complete && node.naturalWidth === 0) setFailed(true);
+  }, []);
+
+  if (logo && !failed) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
+        ref={catchAlreadyFailed}
         src={logo}
         alt=""
+        onError={() => setFailed(true)}
         className={cn("h-12 w-12 rounded-[var(--r-md)] border border-[var(--hairline)] object-cover", className)}
       />
     );

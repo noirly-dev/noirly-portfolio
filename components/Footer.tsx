@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Logo } from "@/components/Logo";
 import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
 import { Magnetic } from "@/components/motion/Magnetic";
-import { fadeUp, SPRING } from "@/lib/motion";
+import { fadeUp } from "@/lib/motion";
 import type { Profile } from "@/data/profile";
 
 interface FooterProps {
@@ -38,9 +38,9 @@ export function Footer({ title, profile }: FooterProps) {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-8">
           <Reveal variants={fadeUp} className="md:col-span-5">
             <div className="flex items-center gap-4 text-[var(--text)]">
-              <motion.span whileHover={{ rotate: 90 }} transition={SPRING} className="inline-flex size-16 shrink-0 md:size-[4.5rem]">
+              <span className="inline-flex size-[4.25rem] shrink-0 md:size-20">
                 <Logo variant="nav" className="size-full" />
-              </motion.span>
+              </span>
               <p className="display-md">{brandName}</p>
             </div>
             <p className="mono-label mt-4">

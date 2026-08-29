@@ -11,7 +11,10 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { PageTransition } from "@/components/PageTransition";
 import { getPortfolioContent } from "@/lib/content/server";
-import { THEME_IDS } from "@/lib/themes/index";
+import {
+  buildThemeBootScript,
+  getThemeCssMap,
+} from "@/lib/themes/palette";
 import "./globals.css";
 import "lenis/dist/lenis.css";
 import "@/styles/cursor.css";
@@ -119,6 +122,7 @@ export default async function RootLayout({
 }>) {
   const content = await getPortfolioContent();
   const { profile } = content;
+  const themeCssMap = getThemeCssMap();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -153,26 +157,7 @@ export default async function RootLayout({
         />
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-          try {
-            var t = localStorage.getItem('theme');
-            var isDark = t !== 'light';
-            if (isDark) document.documentElement.classList.add('dark');
-            else document.documentElement.classList.remove('dark');
-            var validPalettes = ${JSON.stringify(THEME_IDS)};
-            var defaultPalette = ${JSON.stringify(content.theme.id)};
-            var palette = localStorage.getItem('palette');
-            if (!palette || validPalettes.indexOf(palette) === -1) palette = defaultPalette;
-            document.documentElement.dataset.theme = palette;
-            var favicon = document.createElement('link');
-            favicon.rel = 'icon';
-            favicon.type = 'image/png';
-            favicon.sizes = '48x48';
-            favicon.dataset.themeSync = 'true';
-            favicon.href = isDark ? '/favicon-dark-48.png' : '/favicon-light-48.png';
-            document.head.appendChild(favicon);
-          } catch(e) {}
-        `,
+            __html: buildThemeBootScript(content.theme.id, themeCssMap),
           }}
         />
       </head>

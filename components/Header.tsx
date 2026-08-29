@@ -145,21 +145,13 @@ export function Header({ title, navLinks, profile }: HeaderProps) {
             className="group flex min-w-0 shrink-0 items-center gap-2.5 text-[var(--text)]"
             onClick={() => setMenuOpen(false)}
           >
-            <motion.span
-              whileHover={{ rotate: 90 }}
-              transition={SPRING}
-              className="inline-flex size-16 shrink-0 sm:hidden"
-            >
+            <span className="inline-flex size-[4.25rem] shrink-0 sm:hidden">
               <Logo variant="nav" className="size-full" />
-            </motion.span>
+            </span>
             <span className="hidden items-center gap-3 font-display text-xl font-bold leading-none tracking-[-0.04em] uppercase sm:flex md:text-2xl lg:text-3xl">
-              <motion.span
-                whileHover={{ rotate: 90 }}
-                transition={SPRING}
-                className="inline-flex size-12 shrink-0 md:size-14"
-              >
+              <span className="inline-flex size-14 shrink-0 md:size-16">
                 <Logo variant="nav" className="size-full" />
-              </motion.span>
+              </span>
               <span className="truncate">{brandName}</span>
             </span>
           </Link>

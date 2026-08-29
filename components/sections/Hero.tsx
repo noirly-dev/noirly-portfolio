@@ -6,6 +6,7 @@ import { useRef } from "react";
 import { ArrowDown, ArrowUpRight, Check } from "lucide-react";
 import { TextReveal } from "@/components/motion/TextReveal";
 import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
+import { SpotlightCard } from "@/components/motion/SpotlightCard";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { Counter } from "@/components/motion/Counter";
 import { Marquee } from "@/components/motion/Marquee";
@@ -104,7 +105,7 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
 
           {/* Capability panel */}
           <Reveal variants={blurUp} delay={0.25} className="w-full">
-            <div className="surface grain overflow-hidden">
+            <SpotlightCard animateIn={false} lift={false} className="w-full">
               <div className="flex items-center justify-between border-b border-[var(--hairline)] px-5 py-3.5">
                 <span className="mono-label">core_stack</span>
                 <span className="flex items-center gap-2">
@@ -132,18 +133,19 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
               <div className="border-t border-[var(--hairline)] py-3.5">
                 <Marquee items={techChips} speed={34} />
               </div>
-            </div>
+            </SpotlightCard>
           </Reveal>
         </div>
 
         {/* Stats span the full measure — a horizontal rule of fact that closes
             the hero and squares off the ragged bottom of the two columns. */}
-        <StaggerGroup
-          gap={0.08}
-          delay={0.45}
-          as="ul"
-          className="surface grain mt-12 grid grid-cols-1 overflow-hidden sm:grid-cols-3"
-        >
+        <SpotlightCard animateIn={false} lift={false} className="mt-12">
+          <StaggerGroup
+            gap={0.08}
+            delay={0.45}
+            as="ul"
+            className="grid grid-cols-1 sm:grid-cols-3"
+          >
           {heroStats.map((stat) => {
             const parsed = splitStat(stat.value);
             return (
@@ -163,7 +165,8 @@ export function Hero({ profile = defaultProfile }: { profile?: Profile }) {
               </RevealItem>
             );
           })}
-        </StaggerGroup>
+          </StaggerGroup>
+        </SpotlightCard>
       </motion.div>
 
       {/* Scroll cue — absolutely placed so it adds no height to the hero. */}

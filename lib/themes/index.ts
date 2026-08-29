@@ -95,11 +95,33 @@ export function buildThemeCss(theme: ThemeDefinition): string {
   --accent: ${l.accent};
   --accent-ink: ${l.accentInk};
   --accent-soft: ${softAccent(l.accent, 0.1)};
+  --card-gradient: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.9) 0%,
+    color-mix(in srgb, ${l.surface} 72%, ${l.bg} 28%) 100%
+  );
+  --card-sheen: inset 0 1px 0 0 rgb(255 255 255 / 0.9);
+  --elev-1: 0 1px 2px -1px rgb(${hexToRgb(l.text)} / 0.08), 0 4px 12px -6px rgb(${hexToRgb(l.text)} / 0.1);
+  --elev-2: 0 2px 4px -2px rgb(${hexToRgb(l.text)} / 0.08), 0 18px 40px -20px rgb(${hexToRgb(l.text)} / 0.18);
+  --elev-3: 0 4px 8px -4px rgb(${hexToRgb(l.text)} / 0.1), 0 32px 64px -28px rgb(${hexToRgb(l.text)} / 0.24);
+  --glow: rgb(${hexToRgb(l.text)} / 0.06);
+  --grain-opacity: 0.035;
   --background: var(--bg);
   --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--text);
+  --primary-foreground: var(--bg);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
   --muted: var(--surface-2);
   --muted-foreground: var(--text-muted);
+  --accent-foreground: var(--accent-ink);
+  --destructive: #dc2626;
   --border: var(--hairline);
+  --input: var(--hairline-strong);
   --ring: var(--accent);
 }
 .dark {
@@ -115,11 +137,33 @@ export function buildThemeCss(theme: ThemeDefinition): string {
   --accent: ${d.accent};
   --accent-ink: ${d.accentInk};
   --accent-soft: ${softAccent(d.accent, 0.14)};
+  --card-gradient: linear-gradient(
+    180deg,
+    rgb(${hexToRgb(d.text)} / 0.055) 0%,
+    rgb(${hexToRgb(d.text)} / 0.012) 100%
+  );
+  --card-sheen: inset 0 1px 0 0 rgb(${hexToRgb(d.text)} / 0.07);
+  --elev-1: 0 1px 2px -1px rgb(0 0 0 / 0.6), 0 4px 12px -6px rgb(0 0 0 / 0.5);
+  --elev-2: 0 2px 4px -2px rgb(0 0 0 / 0.6), 0 18px 40px -20px rgb(0 0 0 / 0.7);
+  --elev-3: 0 4px 8px -4px rgb(0 0 0 / 0.6), 0 32px 64px -28px rgb(0 0 0 / 0.8);
+  --glow: rgb(${hexToRgb(d.text)} / 0.08);
+  --grain-opacity: 0.05;
   --background: var(--bg);
   --foreground: var(--text);
+  --card: var(--surface);
+  --card-foreground: var(--text);
+  --popover: var(--surface);
+  --popover-foreground: var(--text);
+  --primary: var(--text);
+  --primary-foreground: var(--bg);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--text);
   --muted: var(--surface-2);
   --muted-foreground: var(--text-muted);
+  --accent-foreground: var(--accent-ink);
+  --destructive: #f87171;
   --border: var(--hairline);
+  --input: var(--hairline-strong);
   --ring: var(--accent);
 }`;
 }

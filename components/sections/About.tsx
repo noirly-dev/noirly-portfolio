@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { SectionHeading } from "@/components/sections/SectionHeading";
 import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
+import { SpotlightCard } from "@/components/motion/SpotlightCard";
 import { fadeUp, VIEWPORT, DURATION, EASE_OUT } from "@/lib/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import type { Profile } from "@/data/profile";
@@ -104,12 +105,11 @@ function ArchLayerCard({
         ease: EASE_OUT,
         delay: index * 0.09,
       }}
-      whileHover={{ y: -4, scale: 1.015 }}
-      className="surface-flat relative rounded-[var(--r-md)] bg-[var(--bg)] p-4 transition-shadow duration-300 hover:shadow-[var(--elev-2)]"
     >
+      <SpotlightCard animateIn={false} className="relative rounded-[var(--r-md)] p-4">
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-0 rounded-[var(--r-md)] border border-[var(--accent)]"
+        className="accent-ring-inset pointer-events-none absolute inset-0"
         style={{ opacity: ringOpacity }}
       />
 
@@ -151,12 +151,13 @@ function ArchLayerCard({
           </motion.li>
         ))}
       </ul>
+      </SpotlightCard>
     </motion.div>
   );
 }
 
 export function About({ profile = defaultProfile }: { profile?: Profile }) {
-  const panelRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: panelRef,
     offset: ["start 85%", "end 45%"],
@@ -187,7 +188,7 @@ export function About({ profile = defaultProfile }: { profile?: Profile }) {
 
         {/* Architecture panel */}
         <Reveal variants={fadeUp} delay={0.1} className="lg:pt-2">
-          <div ref={panelRef} className="surface grain relative overflow-hidden">
+          <SpotlightCard ref={panelRef} animateIn={false} lift={false} className="relative">
             <motion.div
               aria-hidden
               className="pointer-events-none absolute inset-x-0 h-40 -translate-y-1/2 opacity-60"
@@ -240,7 +241,7 @@ export function About({ profile = defaultProfile }: { profile?: Profile }) {
                 </div>
               ))}
             </div>
-          </div>
+          </SpotlightCard>
         </Reveal>
       </div>
     </section>

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 type LogoProps = {
   className?: string;
   title?: string;
-  /** Crops outer hex padding so the mark reads clearly at nav sizes */
+  /** Crops outer padding so the mark reads clearly at nav sizes */
   variant?: "default" | "nav";
 };
 
