@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import { Fraunces, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { NoirlyHead, noirlyFontClassName } from "@noirly-dev/ui";
 import { Header } from "@/components/Header";
 import { DeferredFooter } from "@/components/DeferredFooter";
 import { MotionProvider } from "@/components/motion/MotionProvider";
-import { ThemeStyles } from "@/components/ThemeStyles";
 import { SiteBackground } from "@/components/SiteBackground";
 import { FaviconTheme } from "@/components/FaviconTheme";
 import { ThemeProvider } from "@/components/ThemeProvider";
@@ -13,30 +12,7 @@ import { DeferredStyles } from "@/components/DeferredStyles";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { PageTransition } from "@/components/PageTransition";
 import { getPortfolioContent } from "@/lib/content/server";
-import {
-  buildThemeBootScript,
-  getThemeCssMap,
-} from "@/lib/themes/palette";
 import "./globals.css";
-
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const hankenGrotesk = Hanken_Grotesk({
-  variable: "--font-hanken",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains",
-  subsets: ["latin"],
-  display: "swap",
-  preload: false,
-});
 
 const navLinks = [
   { label: "Home", href: "/#home" },
@@ -133,7 +109,6 @@ export default async function RootLayout({
   ]);
   const nonce = headerList.get("x-nonce") ?? undefined;
   const { profile } = content;
-  const themeCssMap = getThemeCssMap();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -161,7 +136,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning data-theme={content.theme.id}>
       <head>
-        <ThemeStyles themeId={content.theme.id} nonce={nonce} />
+        <NoirlyHead themeId={content.theme.id} nonce={nonce} />
         <style
           nonce={nonce}
           dangerouslySetInnerHTML={{
@@ -173,15 +148,9 @@ export default async function RootLayout({
           nonce={nonce}
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <script
-          nonce={nonce}
-          dangerouslySetInnerHTML={{
-            __html: buildThemeBootScript(content.theme.id, themeCssMap),
-          }}
-        />
       </head>
       <body
-        className={`${fraunces.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable} flex min-h-dvh flex-col antialiased`}
+        className={`${noirlyFontClassName} flex min-h-dvh flex-col antialiased`}
       >
         {/*
           Framer Motion serialises each element's `initial` state into the SSR

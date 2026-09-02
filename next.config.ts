@@ -20,6 +20,7 @@ const polyfillStub = "./lib/modern-polyfill.js";
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  transpilePackages: ["@noirly-dev/ui"],
   experimental: {
     optimizePackageImports: ["lucide-react", "@mdi/js", "@mdi/react", "framer-motion"],
   },
