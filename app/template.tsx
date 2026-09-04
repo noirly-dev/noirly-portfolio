@@ -1,9 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { DURATION, EASE_OUT } from "@/lib/motion";
-
-import { useInstantEntrance } from "@/hooks/useCoarsePointer";
+import { DURATION, EASE_OUT } from "@noirly-dev/ui/motion";
+import { useInstantEntrance } from "@noirly-dev/ui";
 
 /**
  * Route enter transition.

@@ -4,9 +4,7 @@ import Link from "next/link";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/Logo";
-import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
-import { Magnetic } from "@/components/motion/Magnetic";
-import { fadeUp } from "@/lib/motion";
+import { Reveal, StaggerGroup, RevealItem, Magnetic, fadeUp } from "@noirly-dev/ui/motion";
 import type { Profile } from "@/data/profile";
 
 interface FooterProps {

@@ -2,9 +2,7 @@
 
 import { Cloud, Globe, Server, Smartphone, type LucideIcon } from "lucide-react";
 import { SectionHeading } from "@/components/sections/SectionHeading";
-import { SpotlightCard } from "@/components/motion/SpotlightCard";
-import { StaggerGroup, RevealItem } from "@/components/motion/Reveal";
-import { fadeUp } from "@/lib/motion";
+import { SpotlightCard, StaggerGroup, RevealItem, fadeUp } from "@noirly-dev/ui/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import { skillCards as defaultSkillCards, type SkillCard, type SkillIconKey } from "@/data/skills";
 import type { Profile } from "@/data/profile";

@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "@/components/sections/SectionHeading";
-import { Magnetic } from "@/components/motion/Magnetic";
-import { SpotlightCard } from "@/components/motion/SpotlightCard";
-import { TiltCard } from "@/components/TiltCard";
+import { Magnetic, SpotlightCard, TiltCard } from "@noirly-dev/ui/motion";
 import {
   ProjectFeatureGraphic,
   ProjectLogo,

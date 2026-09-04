@@ -2,10 +2,7 @@
 
 import { ArrowUpRight, Github, Linkedin, Mail, type LucideIcon } from "lucide-react";
 import { SectionHeading } from "@/components/sections/SectionHeading";
-import { StaggerGroup, RevealItem } from "@/components/motion/Reveal";
-import { SpotlightCard } from "@/components/motion/SpotlightCard";
-import { Magnetic } from "@/components/motion/Magnetic";
-import { fadeUp } from "@/lib/motion";
+import { StaggerGroup, RevealItem, SpotlightCard, Magnetic, fadeUp } from "@noirly-dev/ui/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import type { Profile } from "@/data/profile";
 

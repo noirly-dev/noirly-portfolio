@@ -1,5 +1,10 @@
 # Color themes
 
+> **Moved.** The palettes now live in `@noirly-dev/ui`
+> (`packages/ui/src/themes/index.ts`) and are verified there with
+> `pnpm themes:verify`. Edit them in noirly-ui, not here — the CSS in this
+> folder is kept for reference and is not loaded at runtime.
+
 Accessible color palettes for Noirly, verified against [WCAG AA normal text (4.5:1)](https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html) using the same methodology as [colourcontrast.cc](https://colourcontrast.cc/).
 
 ## Palettes

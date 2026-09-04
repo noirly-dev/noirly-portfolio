@@ -1,8 +1,6 @@
 "use client";
 
-import { Reveal } from "@/components/motion/Reveal";
-import { TextReveal } from "@/components/motion/TextReveal";
-import { fadeUp } from "@/lib/motion";
+import { Reveal, TextReveal, fadeUp } from "@noirly-dev/ui/motion";
 import { cn } from "@/lib/utils";
 
 interface SectionHeadingProps {

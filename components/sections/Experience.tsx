@@ -13,11 +13,7 @@ import {
   type Variants,
 } from "framer-motion";
 import { SectionHeading } from "@/components/sections/SectionHeading";
-import { Reveal, StaggerGroup } from "@/components/motion/Reveal";
-import { TextReveal } from "@/components/motion/TextReveal";
-import { Counter } from "@/components/motion/Counter";
-import { SpotlightCard } from "@/components/motion/SpotlightCard";
-import { fadeUp, VIEWPORT, DURATION, EASE_OUT } from "@/lib/motion";
+import { Reveal, StaggerGroup, TextReveal, Counter, SpotlightCard, fadeUp, VIEWPORT, DURATION, EASE_OUT } from "@noirly-dev/ui/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import { workExperience as defaultExperience } from "@/data/experience";
 import type { Profile } from "@/data/profile";

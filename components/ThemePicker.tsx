@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Check, Palette } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { DURATION, EASE_OUT, SPRING } from "@/lib/motion";
+import { DURATION, EASE_OUT, SPRING } from "@noirly-dev/ui/motion";
 import { useTheme } from "@/components/ThemeProvider";
 import type { ThemeDefinition } from "@/lib/themes/index";
 

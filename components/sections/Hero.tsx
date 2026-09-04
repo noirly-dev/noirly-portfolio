@@ -5,14 +5,10 @@ import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { ArrowDown, ArrowUpRight, Check } from "lucide-react";
-import { TextReveal } from "@/components/motion/TextReveal";
-import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
-import { SpotlightCard } from "@/components/motion/SpotlightCard";
-import { Counter } from "@/components/motion/Counter";
-import { blurUp, fadeUp, DURATION, EASE_OUT } from "@/lib/motion";
+import { TextReveal, Reveal, StaggerGroup, RevealItem, SpotlightCard, Counter, blurUp, fadeUp, DURATION, EASE_OUT } from "@noirly-dev/ui/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import type { Profile } from "@/data/profile";
-import { useInstantEntrance } from "@/hooks/useCoarsePointer";
+import { useInstantEntrance } from "@noirly-dev/ui";
 
 /** Canvas + noise worker stay off the critical path; decorative only. */
 const HeroCanvas = dynamic(
@@ -21,7 +17,7 @@ const HeroCanvas = dynamic(
 );
 
 const Marquee = dynamic(
-  () => import("@/components/motion/Marquee").then((m) => m.Marquee),
+  () => import("@noirly-dev/ui/motion").then((m) => m.Marquee),
   {
     ssr: false,
     loading: () => (

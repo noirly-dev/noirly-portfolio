@@ -12,10 +12,8 @@ import {
 import { Sun, Moon, Menu, X, ArrowUpRight } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ThemePicker } from "@/components/ThemePicker";
-import { ScrollProgress } from "@/components/motion/ScrollProgress";
-import { Magnetic } from "@/components/motion/Magnetic";
-import { DURATION, EASE_OUT, EASE_IN_OUT, SPRING, stagger } from "@/lib/motion";
-import { useInstantEntrance } from "@/hooks/useCoarsePointer";
+import { ScrollProgress, Magnetic, DURATION, EASE_OUT, EASE_IN_OUT, SPRING, stagger } from "@noirly-dev/ui/motion";
+import { useInstantEntrance } from "@noirly-dev/ui";
 import type { Profile } from "@/data/profile";
 
 interface NavLink {

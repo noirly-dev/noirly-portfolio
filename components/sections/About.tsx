@@ -17,9 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { SectionHeading } from "@/components/sections/SectionHeading";
-import { Reveal, StaggerGroup, RevealItem } from "@/components/motion/Reveal";
-import { SpotlightCard } from "@/components/motion/SpotlightCard";
-import { fadeUp, VIEWPORT, DURATION, EASE_OUT } from "@/lib/motion";
+import { Reveal, StaggerGroup, RevealItem, SpotlightCard, fadeUp, VIEWPORT, DURATION, EASE_OUT } from "@noirly-dev/ui/motion";
 import { profile as defaultProfile } from "@/data/profile";
 import type { Profile } from "@/data/profile";
 import { archLayers, type ArchIconKey, type ArchLayer } from "@/data/architecture";

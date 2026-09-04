@@ -1,16 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
-import { NoirlyHead, noirlyFontClassName } from "@noirly-dev/ui";
+import { NoirlyHead, noirlyFontClassName, SiteBackground, PageTransition } from "@noirly-dev/ui";
 import { Header } from "@/components/Header";
 import { DeferredFooter } from "@/components/DeferredFooter";
-import { MotionProvider } from "@/components/motion/MotionProvider";
-import { SiteBackground } from "@/components/SiteBackground";
+import { MotionProvider } from "@noirly-dev/ui/motion";
 import { FaviconTheme } from "@/components/FaviconTheme";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { DeferredCursor } from "@/components/DeferredCursor";
 import { DeferredStyles } from "@/components/DeferredStyles";
-import { SmoothScroll } from "@/components/SmoothScroll";
-import { PageTransition } from "@/components/PageTransition";
+import { SmoothScroll } from "@noirly-dev/ui/scroll";
 import { getPortfolioContent } from "@/lib/content/server";
 import "./globals.css";
 
